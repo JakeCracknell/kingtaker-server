@@ -17,8 +17,8 @@ public class GameServer implements Runnable {
         REPORT_PLAYER
     }
 
-    private final char MESSAGE_DELIMINATOR = ',';
-    private final int LISTENER_PORT = 4444;
+    private static final char MESSAGE_DELIMINATOR = ',';
+    private static final int LISTENER_PORT = 4444;
 
     ServerSocket sktListener;
     GameLobby gameList;
