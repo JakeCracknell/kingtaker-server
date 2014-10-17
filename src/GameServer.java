@@ -9,7 +9,7 @@ import java.net.Socket;
  * Created by jc4512 on 16/10/14.
  */
 public class GameServer implements Runnable {
-    public enum ClientMessage {
+    public enum ClientCommandCode {
         GET_GAME_LIST,
         AUTHENTICATE_USER,
         CREATE_GAME,
@@ -17,13 +17,17 @@ public class GameServer implements Runnable {
         REPORT_PLAYER
     }
 
+    private final char MESSAGE_DELIMINATOR = ',';
     private final int LISTENER_PORT = 4444;
 
     ServerSocket sktListener;
-
+    GameLobby gameList;
 
     @Override
     public void run() {
+        //Create empty game lobby
+        gameList = new GameLobby();
+
         //Initialise listener - keep attempting until successful.
         while(sktListener == null) {
             try {
@@ -64,6 +68,27 @@ public class GameServer implements Runnable {
     private String processMessageAndGetResponse(Socket socket, String message) {
         String response = null;
         try {
+            //Split message (e.g. "1,myusername,mypassword") into fields. Switch on command type.
+            String fields[] = message.split(Character.toString(MESSAGE_DELIMINATOR));
+            ClientCommandCode clientCommandCode = ClientCommandCode.values()[Integer.getInteger(fields[0])];
+
+            switch (clientCommandCode) {
+                case GET_GAME_LIST :
+                    response = gameList.toString();
+                    break;
+                case AUTHENTICATE_USER :
+
+                    break;
+                case CREATE_GAME :
+
+                    break;
+                case REMOVE_GAME :
+
+                    break;
+                case REPORT_PLAYER :
+
+                    break;
+            }
 
         } catch (Exception e) {
             //Malformed message. Safe to ignore.
