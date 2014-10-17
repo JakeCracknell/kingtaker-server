@@ -22,14 +22,19 @@ public class GameServer implements Runnable {
 
     ServerSocket sktListener;
     GameLobby gameList;
+    UserAccountManager userAccountManager;
 
     @Override
     public void run() {
         //Create empty game lobby
         gameList = new GameLobby();
 
+        //Initialise UAM. Requires database access and might hang if the
+        //connection is unavailable. Exits if driver/library is not found.
+        userAccountManager = new UserAccountManager();
+
         //Initialise listener - keep attempting until successful.
-        while(sktListener == null) {
+        while (sktListener == null) {
             try {
                 sktListener = new ServerSocket(LISTENER_PORT);
             } catch (IOException e) {
