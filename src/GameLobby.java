@@ -4,7 +4,7 @@ import java.util.ArrayList;
  * Created by jc4512 on 17/10/14.
  */
 public class GameLobby {
-    private final char DELIMINATOR = ',';
+    private static final char DELIMINATOR = ',';
 
     private ArrayList<Game> games = new ArrayList<Game>();
 

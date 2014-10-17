@@ -6,15 +6,13 @@ import java.util.Date;
  */
 public class Game {
     private Socket socket;
-    private String username;
-    private int rating;
+    private GameUser user;
     private int variantID;
     private Date creationDate;
 
-    public Game(Socket socket, String username, int rating, int variantID) {
+    public Game(Socket socket, GameUser user, int variantID) {
         this.socket = socket;
-        this.username = username;
-        this.rating = rating;
+        this.user = user;
         this.variantID = variantID;
         creationDate = new Date();
     }
@@ -23,12 +21,8 @@ public class Game {
         return socket;
     }
 
-    public String getUsername() {
-        return username;
-    }
-
-    public int getRating() {
-        return rating;
+    public GameUser getUser() {
+        return user;
     }
 
     public int getVariantID() {
@@ -42,8 +36,8 @@ public class Game {
     @Override
     public String toString() {
         return "{" + socket +
-                "," + username +
-                "," + rating +
+                "," + user.getName() +
+                "," + user.getRating() +
                 "," + variantID +
                 '}';
     }
