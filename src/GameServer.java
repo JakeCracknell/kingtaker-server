@@ -78,16 +78,23 @@ public class GameServer implements Runnable {
     private String processMessageAndGetResponse(Socket socket, String message) {
         String response = null;
         try {
-            //Split message (e.g. "1,myusername,mypasswordhash") into fields. Switch on command type.
+            //Split message (e.g. "1,myusername,mypasswordhash") into fields.
+            //Switch on command type (first argument).
             String fields[] = message.split(Character.toString(MESSAGE_DELIMINATOR));
-            ClientCommandCode clientCommandCode = ClientCommandCode.values()[Integer.getInteger(fields[0])];
+            ClientCommandCode clientCommandCode =
+                    ClientCommandCode.values()[Integer.getInteger(fields[0])];
 
             switch (clientCommandCode) {
                 case GET_GAME_LIST :
                     response = gameList.toString();
                     break;
                 case AUTHENTICATE_USER :
-
+                    GameUser user = userAccountManager.getUser(fields[1],Integer.getInteger(fields[2]));
+                    if (user != null) {
+                        response = user.getRating() + "";
+                    } else {
+                        response = "error";
+                    }
                     break;
                 case CREATE_GAME :
 
@@ -101,7 +108,7 @@ public class GameServer implements Runnable {
             }
 
         } catch (Exception e) {
-            //Malformed message. Safe to ignore.
+            response = "error";
         }
         return response;
     }
