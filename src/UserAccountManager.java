@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class UserAccountManager {
     private static final String DB_USER = "jc4512";
-    private static final String DB_PATH = "jdbc:postgresql://localhost:5432/jc4512";
+    private static final String DB_PATH = "jdbc:postgresql://db:5432/jc4512";
     private static final String DB_PASSWORD = "P5iKp1JYXf";
 
     private Connection db;
@@ -21,6 +21,7 @@ public class UserAccountManager {
                 e.printStackTrace();
                 System.exit(0);
             } catch (SQLException e) {
+                System.out.println(e.getMessage() + " - retrying...");
             }
         }
     }

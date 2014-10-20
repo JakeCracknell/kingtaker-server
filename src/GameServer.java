@@ -27,19 +27,24 @@ public class GameServer implements Runnable {
     @Override
     public void run() {
         //Create empty game lobby
+        System.out.println("Initialising lobby...");
         gameList = new GameLobby();
 
         //Initialise UAM. Requires database access and might hang if the
         //connection is unavailable. Exits if driver/library is not found.
+        System.out.println("Initialising user account manager...");
         userAccountManager = new UserAccountManager();
 
         //Initialise listener - keep attempting until successful.
+        System.out.println("Initialising listening socket...");
         while (sktListener == null) {
             try {
                 sktListener = new ServerSocket(LISTENER_PORT);
             } catch (IOException e) {
+                System.out.println(e.getMessage() + " - retrying...");
             }
         }
+        System.out.println("Game server has started");
 
         //Run listening loop
         while (true) {
@@ -73,7 +78,7 @@ public class GameServer implements Runnable {
     private String processMessageAndGetResponse(Socket socket, String message) {
         String response = null;
         try {
-            //Split message (e.g. "1,myusername,mypassword") into fields. Switch on command type.
+            //Split message (e.g. "1,myusername,mypasswordhash") into fields. Switch on command type.
             String fields[] = message.split(Character.toString(MESSAGE_DELIMINATOR));
             ClientCommandCode clientCommandCode = ClientCommandCode.values()[Integer.getInteger(fields[0])];
 
