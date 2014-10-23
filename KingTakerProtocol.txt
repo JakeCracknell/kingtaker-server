@@ -1,0 +1,29 @@
+CLIENT TO SERVER MESSAGES AND RESPONSES
+0 - get list of games
+    {ip,username,rating,variantID},{ip,username,rating,variantID},...
+    3 (empty)
+1,username,passwordHash - authenticate user
+    0,rating
+    1 (invalid)
+2,variantID - create game
+    0 (ok)
+    4 (auth timeout)
+3 - remove game
+    (no response required)
+4,username - report player
+    (no response required)
+
+CLIENT TO CLIENT MESSAGES AND RESPONSES
+0,username,rating - connect to open game
+    0 (ok)
+    2 (refused)
+1,moveNo,oldLocation.toString(),newLocation.toString() - send move
+    0 (ok)
+
+
+RESPONSE ERROR CODES:
+0 - OK
+1 - invalid operation (game move)
+2 - connection refused
+3 - requested object is empty
+4 - login fail or authentication timeout
