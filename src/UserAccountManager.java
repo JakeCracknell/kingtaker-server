@@ -2,14 +2,19 @@
  * Created by jc4512 on 17/10/14.
  */
 
+import java.net.InetAddress;
 import java.sql.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserAccountManager {
     private static final String DB_USER = "jc4512";
     private static final String DB_PATH = "jdbc:postgresql://db:5432/jc4512";
     private static final String DB_PASSWORD = "P5iKp1JYXf";
+    private static final int CLIENT_AUTHENTICATION_TIMEOUT_MS = 1000*60*60;
 
     private Connection db;
+    private Map<InetAddress, GameUser> userMap;
 
     //Open database - block until it is opened, but exit if the driver is missing.
     public UserAccountManager() {
@@ -24,11 +29,13 @@ public class UserAccountManager {
                 System.out.println(e.getMessage() + " - retrying...");
             }
         }
+
+        userMap = new HashMap<InetAddress, GameUser>();
     }
 
 
     //Retrieves user from database, or null if the credentials are incorrect
-    public GameUser getUser(String username, int hashedPassword) {
+    public GameUser getUserByName(String username, int hashedPassword) {
         GameUser gameUser = null;
 
         try {
@@ -56,5 +63,17 @@ public class UserAccountManager {
         }
 
         return gameUser;
+    }
+
+    //Given an IP address of the client, gets that current user.
+    //Returns null if they need to be authenticated again or were never logged in.
+    //Side effect: removes user from userMap if their login time is old.
+    public GameUser fetchUserByAddress(InetAddress ip) {
+        GameUser user = userMap.get(ip);
+        if (user.getTimeSinceAuthenticated() > CLIENT_AUTHENTICATION_TIMEOUT_MS) {
+            userMap.containsKey(ip);
+            return null;
+        }
+        return user;
     }
 }

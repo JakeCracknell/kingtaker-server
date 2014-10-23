@@ -8,12 +8,14 @@ public class GameUser {
     private int rating;
     private int hashedPassword;
     private Date dateJoined;
+    private long timeLastAuthenticated;
 
     public GameUser(String name, int rating, int hashedPassword, Date dateJoined) {
         this.name = name;
         this.rating = rating;
         this.hashedPassword = hashedPassword;
         this.dateJoined = dateJoined;
+        this.timeLastAuthenticated = System.currentTimeMillis();
     }
 
     public GameUser(String name, int rating) {
@@ -33,5 +35,9 @@ public class GameUser {
 
     public Date getDateJoined() {
         return dateJoined;
+    }
+
+    public long getTimeSinceAuthenticated() {
+        return System.currentTimeMillis() - timeLastAuthenticated;
     }
 }

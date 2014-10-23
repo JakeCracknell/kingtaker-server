@@ -16,4 +16,13 @@ public class GameLobby {
         }
         return sb.toString();
     }
+
+    public void removeByUser(GameUser gameUser) {
+        for (Game game : games) {
+            if (game.getUser() == gameUser) {
+                games.remove(game);
+                return;
+            }
+        }
+    }
 }

@@ -1,3 +1,6 @@
+import NetworkingCodes.ClientCommandCode;
+import NetworkingCodes.ResponseCode;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -9,13 +12,7 @@ import java.net.Socket;
  * Created by jc4512 on 16/10/14.
  */
 public class GameServer implements Runnable {
-    public enum ClientCommandCode {
-        GET_GAME_LIST,
-        AUTHENTICATE_USER,
-        CREATE_GAME,
-        REMOVE_GAME,
-        REPORT_PLAYER
-    }
+
 
     private static final char MESSAGE_DELIMINATOR = ',';
     private static final int LISTENER_PORT = 4444;
@@ -87,20 +84,26 @@ public class GameServer implements Runnable {
             switch (clientCommandCode) {
                 case GET_GAME_LIST :
                     response = gameList.toString();
+                    if (response == "") {
+                        response = ResponseCode.EMPTY + "";
+                    }
                     break;
                 case AUTHENTICATE_USER :
-                    GameUser user = userAccountManager.getUser(fields[1],Integer.getInteger(fields[2]));
-                    if (user != null) {
-                        response = user.getRating() + "";
+                    GameUser userFromDB = userAccountManager.getUserByName(fields[1], Integer.getInteger(fields[2]));
+                    if (userFromDB != null) {
+                        response = userFromDB.getRating() + "";
                     } else {
-                        response = "error";
+                        response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
                 case CREATE_GAME :
 
                     break;
                 case REMOVE_GAME :
-
+                    GameUser userFromMemory = userAccountManager.fetchUserByAddress(socket.getInetAddress());
+                    if (userFromMemory != null) {
+                        gameList.removeByUser(userFromMemory);
+                    }
                     break;
                 case REPORT_PLAYER :
 
@@ -108,7 +111,7 @@ public class GameServer implements Runnable {
             }
 
         } catch (Exception e) {
-            response = "error";
+            response = ResponseCode.INVALID + "";
         }
         return response;
     }
