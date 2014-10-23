@@ -20,9 +20,9 @@ public class GameServer implements Runnable {
     private static final char MESSAGE_DELIMINATOR = ',';
     private static final int LISTENER_PORT = 4444;
 
-    ServerSocket sktListener;
-    GameLobby gameList;
-    UserAccountManager userAccountManager;
+    private ServerSocket sktListener;
+    private GameLobby gameList;
+    private UserAccountManager userAccountManager;
 
     @Override
     public void run() {
@@ -54,16 +54,16 @@ public class GameServer implements Runnable {
                 BufferedReader clientReader =
                         new BufferedReader(new InputStreamReader(sktClient.getInputStream()));
                 String clientMessage = clientReader.readLine();
-                System.out.println("[" + sktClient.getInetAddress() + "] sent: " + clientMessage);
+                System.out.println("[" + sktClient.getInetAddress().getAddress() + "] sent: " + clientMessage);
 
                 //Process message and generate an appropriate response, or none if it is junk.
                 String serverResponseMessage = processMessageAndGetResponse(sktClient,clientMessage);
                 if (serverResponseMessage != null) {
                     DataOutputStream clientWriter = new DataOutputStream(sktClient.getOutputStream());
                     clientWriter.writeBytes(serverResponseMessage);
-                    System.out.println("[" + sktClient.getInetAddress() + "] response: " + serverResponseMessage);
+                    System.out.println("[" + sktClient.getInetAddress().getAddress() + "] response: " + serverResponseMessage);
                 } else {
-                    System.out.println("[" + sktClient.getInetAddress() + "] no response required");
+                    System.out.println("[" + sktClient.getInetAddress().getAddress() + "] no response required");
                 }
 
                 //TODO: is this needed?
