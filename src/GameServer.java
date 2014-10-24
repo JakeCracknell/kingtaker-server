@@ -89,7 +89,8 @@ public class GameServer implements Runnable {
                     }
                     break;
                 case AUTHENTICATE_USER :
-                    GameUser userToAuth = userAccountManager.authenticateUser(fields[1], Integer.getInteger(fields[2]));
+                    GameUser userToAuth = userAccountManager.authenticateUser(fields[1],
+                            Integer.getInteger(fields[2]), socket.getInetAddress());
                     if (userToAuth != null) {
                         response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
                     } else {
