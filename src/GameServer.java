@@ -89,7 +89,7 @@ public class GameServer implements Runnable {
                     }
                     break;
                 case AUTHENTICATE_USER :
-                    GameUser userToAuth = userAccountManager.getUserByName(fields[1], Integer.getInteger(fields[2]));
+                    GameUser userToAuth = userAccountManager.authenticateUser(fields[1], Integer.getInteger(fields[2]));
                     if (userToAuth != null) {
                         response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
                     } else {
@@ -98,16 +98,17 @@ public class GameServer implements Runnable {
                     break;
                 case CREATE_GAME :
                     int variantID = Integer.getInteger(fields[1]);
-                    GameUser userGameHost = userAccountManager.fetchUserByAddress(socket.getInetAddress());
-                    if (userGameHost != null) {
+                    GameUser userGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
+                    if (userAccountManager.checkUserIsAuthenticated(userGameHost)) {
                         gameList.addGame(new Game(socket, userGameHost, variantID));
                         response = ResponseCode.OK + "";
                     } else {
+                        userAccountManager.unauthenticateUser(userGameHost);
                         response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
                 case REMOVE_GAME :
-                    GameUser userExGameHost = userAccountManager.fetchUserByAddress(socket.getInetAddress());
+                    GameUser userExGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
                     if (userExGameHost != null) {
                         gameList.removeByUser(userExGameHost);
                     }

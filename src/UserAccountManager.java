@@ -34,8 +34,9 @@ public class UserAccountManager {
     }
 
 
-    //Retrieves user from database, or null if the credentials are incorrect
-    public GameUser getUserByName(String username, int hashedPassword) {
+    //Retrieves user from database and stores in the users map,
+    //or null if the credentials are incorrect
+    public GameUser authenticateUser(String username, int hashedPassword) {
         GameUser gameUser = null;
 
         try {
@@ -65,15 +66,21 @@ public class UserAccountManager {
         return gameUser;
     }
 
+
     //Given an IP address of the client, gets that current user.
     //Returns null if they need to be authenticated again or were never logged in.
     //Side effect: removes user from userMap if their login time is old.
-    public GameUser fetchUserByAddress(InetAddress ip) {
-        GameUser user = userMap.get(ip);
-        if (user.getTimeSinceAuthenticated() > CLIENT_AUTHENTICATION_TIMEOUT_MS) {
-            userMap.containsKey(ip);
-            return null;
-        }
-        return user;
+    public GameUser getUserByAddress(InetAddress ip) {
+        return userMap.get(ip);
+    }
+
+    public boolean checkUserIsAuthenticated(GameUser user) {
+        return userMap.containsKey(user) &&
+                user.getTimeSinceAuthenticated() > CLIENT_AUTHENTICATION_TIMEOUT_MS;
+
+    }
+
+    public void unauthenticateUser(GameUser user) {
+        userMap.remove(user);
     }
 }
