@@ -99,8 +99,9 @@ public class UserAccountManager {
 
     //Checks user was authenticated and their timeout hasn't elapsed.
     public boolean checkUserIsAuthenticated(GameUser user) {
-        return userToIpMap.containsKey(user) &&
-                user.getTimeSinceAuthenticated() > CLIENT_AUTHENTICATION_TIMEOUT_MS;
+        return user != null &&
+                userToIpMap.containsKey(user) &&
+                user.getTimeSinceAuthenticated() < CLIENT_AUTHENTICATION_TIMEOUT_MS;
 
     }
 
