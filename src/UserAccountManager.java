@@ -50,8 +50,8 @@ public class UserAccountManager {
     //Retrieves user from database and stores in the users map,
     //  *** user is now authenticated for 1 hour ***
     //or null if the credentials are incorrect.
-    //TODO: should clear the authentication if someone of the same ip
-    // or username was previously connected
+    //If user connects twice, maps do not get two entries -
+    // the IP is updated if necessary.
     public GameUser authenticateUser(String username, int hashedPassword, InetAddress ip) {
         GameUser gameUser = null;
 
@@ -81,6 +81,7 @@ public class UserAccountManager {
             rs.close();
             stmt.close();
 
+            unauthenticateUser(gameUser);
             ipToUserMap.put(ip,gameUser);
             userToIpMap.put(gameUser,ip);
 

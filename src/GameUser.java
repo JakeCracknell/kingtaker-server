@@ -40,4 +40,21 @@ public class GameUser {
     public long getTimeSinceAuthenticated() {
         return System.currentTimeMillis() - timeLastAuthenticated;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GameUser gameUser = (GameUser) o;
+
+        if (!name.equals(gameUser.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

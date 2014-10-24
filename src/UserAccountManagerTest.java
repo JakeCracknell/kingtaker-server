@@ -31,11 +31,18 @@ public class UserAccountManagerTest {
 
     @Test
     public void testAuthenticateUserTwice() throws Exception {
-        GameUser gameUser1 = uam.authenticateUser(testUserNameInDB, testPasswordHash, testIP);
+        InetAddress testIP2 = InetAddress.getByAddress(new byte[]{8,8,4,4});
+
+        GameUser gameUser1 = uam.authenticateUser(testUserNameInDB, testPasswordHash, testIP2);
         GameUser gameUser2 = uam.authenticateUser(testUserNameInDB, testPasswordHash, testIP);
 
-        assertFalse(uam.checkUserIsAuthenticated(gameUser1));
+        //gameUser1 == gameUser2
         assertTrue(uam.checkUserIsAuthenticated(gameUser2));
+
+        GameUser gameUser3 = uam.getUserByAddress(testIP);
+        assertNotNull(gameUser3);
+        GameUser gameUser4 = uam.getUserByAddress(testIP2);
+        assertNull(gameUser4);
     }
 
     @Test

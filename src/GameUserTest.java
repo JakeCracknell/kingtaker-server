@@ -45,7 +45,18 @@ public class GameUserTest {
         assertTrue(timeMS >= testWaitDurationMs && timeMS < 10000);
     }
 
+    @Test
+    public void testEquals() throws Exception {
+        assertEquals(
+                new GameUser(testName, testRating,
+                        getPasswordHash(testName,testPassword), testJoiningDate),
+                new GameUser(testName, testRating,
+                        getPasswordHash(testName,testPassword), testJoiningDate));
+
+    }
+
     private int getPasswordHash(String username, String plaintextPassword) {
         return (username + plaintextPassword).hashCode();
     }
+
 }
