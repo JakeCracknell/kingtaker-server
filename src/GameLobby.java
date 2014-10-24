@@ -25,4 +25,8 @@ public class GameLobby {
             }
         }
     }
+
+    public void addGame(Game game) {
+        games.add(game);
+    }
 }

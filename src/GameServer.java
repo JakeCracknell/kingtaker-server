@@ -14,7 +14,7 @@ import java.net.Socket;
 public class GameServer implements Runnable {
 
 
-    private static final char MESSAGE_DELIMINATOR = ',';
+    private static final String MESSAGE_DELIMINATOR = ",";
     private static final int LISTENER_PORT = 4444;
 
     private ServerSocket sktListener;
@@ -77,32 +77,39 @@ public class GameServer implements Runnable {
         try {
             //Split message (e.g. "1,myusername,mypasswordhash") into fields.
             //Switch on command type (first argument).
-            String fields[] = message.split(Character.toString(MESSAGE_DELIMINATOR));
+            String fields[] = message.split(MESSAGE_DELIMINATOR);
             ClientCommandCode clientCommandCode =
                     ClientCommandCode.values()[Integer.getInteger(fields[0])];
 
             switch (clientCommandCode) {
                 case GET_GAME_LIST :
-                    response = gameList.toString();
+                    response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameList.toString();
                     if (response == "") {
                         response = ResponseCode.EMPTY + "";
                     }
                     break;
                 case AUTHENTICATE_USER :
-                    GameUser userFromDB = userAccountManager.getUserByName(fields[1], Integer.getInteger(fields[2]));
-                    if (userFromDB != null) {
-                        response = userFromDB.getRating() + "";
+                    GameUser userToAuth = userAccountManager.getUserByName(fields[1], Integer.getInteger(fields[2]));
+                    if (userToAuth != null) {
+                        response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
                     } else {
                         response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
                 case CREATE_GAME :
-
+                    int variantID = Integer.getInteger(fields[1]);
+                    GameUser userGameHost = userAccountManager.fetchUserByAddress(socket.getInetAddress());
+                    if (userGameHost != null) {
+                        gameList.addGame(new Game(socket, userGameHost, variantID));
+                        response = ResponseCode.OK + "";
+                    } else {
+                        response = ResponseCode.BAD_LOGIN + "";
+                    }
                     break;
                 case REMOVE_GAME :
-                    GameUser userFromMemory = userAccountManager.fetchUserByAddress(socket.getInetAddress());
-                    if (userFromMemory != null) {
-                        gameList.removeByUser(userFromMemory);
+                    GameUser userExGameHost = userAccountManager.fetchUserByAddress(socket.getInetAddress());
+                    if (userExGameHost != null) {
+                        gameList.removeByUser(userExGameHost);
                     }
                     break;
                 case REPORT_PLAYER :

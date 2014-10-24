@@ -1,6 +1,6 @@
 CLIENT TO SERVER MESSAGES AND RESPONSES
 0 - get list of games
-    {ip,username,rating,variantID},{ip,username,rating,variantID},...
+    0,{ip,username,rating,variantID},{ip,username,rating,variantID},...
     3 (empty)
 1,username,passwordHash - authenticate user
     0,rating
