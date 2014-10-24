@@ -12,8 +12,6 @@ import java.net.Socket;
  * Created by jc4512 on 16/10/14.
  */
 public class GameServer implements Runnable {
-
-
     private static final String MESSAGE_DELIMINATOR = ",";
     private static final int LISTENER_PORT = 4444;
 
@@ -72,11 +70,12 @@ public class GameServer implements Runnable {
         }
     }
 
+    //Splits message into fields, then switch on the first, which specifies the opcode.
+    //If it parses correctly, the server will perform any requested actions and/or return
+    // information. Otherwise, it will return the INVALID error code.
     private String processMessageAndGetResponse(Socket socket, String message) {
         String response = null;
         try {
-            //Split message (e.g. "1,myusername,mypasswordhash") into fields.
-            //Switch on command type (first argument).
             String fields[] = message.split(MESSAGE_DELIMINATOR);
             ClientCommandCode clientCommandCode =
                     ClientCommandCode.values()[Integer.getInteger(fields[0])];
@@ -115,7 +114,7 @@ public class GameServer implements Runnable {
                     }
                     break;
                 case REPORT_PLAYER :
-
+                    //TODO: reporting system.
                     break;
             }
 

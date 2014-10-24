@@ -90,7 +90,6 @@ public class UserAccountManager {
         return gameUser;
     }
 
-
     //Given an IP address of the client, gets that current user.
     //Returns null if they need to be authenticated again or were never logged in.
     //Side effect: removes user from ipToUserMap if their login time is old.
