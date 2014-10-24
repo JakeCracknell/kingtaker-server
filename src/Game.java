@@ -35,7 +35,7 @@ public class Game {
 
     @Override
     public String toString() {
-        return "{" + socket.getInetAddress().getAddress() +
+        return "{" + socket.getInetAddress().getHostAddress() +
                 "," + user.getName() +
                 "," + user.getRating() +
                 "," + variantID +

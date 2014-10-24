@@ -10,10 +10,15 @@ public class GameLobby {
 
     @Override
     public String toString() {
+        if (games.size() == 0) {
+            return "";
+        }
+
         StringBuilder sb = new StringBuilder();
         for (Game game : games) {
             sb.append(game.toString() + DELIMINATOR);
         }
+        sb.deleteCharAt(sb.length()-1);
         return sb.toString();
     }
 
