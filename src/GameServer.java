@@ -49,16 +49,16 @@ public class GameServer implements Runnable {
                 BufferedReader clientReader =
                         new BufferedReader(new InputStreamReader(sktClient.getInputStream()));
                 String clientMessage = clientReader.readLine();
-                System.out.println("[" + sktClient.getInetAddress().getAddress() + "] sent: " + clientMessage);
+                System.out.println("[" + sktClient.getInetAddress().getHostAddress() + "] sent: " + clientMessage);
 
                 //Process message and generate an appropriate response, or none if it is junk.
                 String serverResponseMessage = processMessageAndGetResponse(sktClient,clientMessage);
                 if (serverResponseMessage != null) {
                     DataOutputStream clientWriter = new DataOutputStream(sktClient.getOutputStream());
                     clientWriter.writeBytes(serverResponseMessage);
-                    System.out.println("[" + sktClient.getInetAddress().getAddress() + "] response: " + serverResponseMessage);
+                    System.out.println("[" + sktClient.getInetAddress().getHostAddress() + "] response: " + serverResponseMessage);
                 } else {
-                    System.out.println("[" + sktClient.getInetAddress().getAddress() + "] no response required");
+                    System.out.println("[" + sktClient.getInetAddress().getHostAddress() + "] no response required");
                 }
 
                 //TODO: is this needed?
@@ -77,27 +77,26 @@ public class GameServer implements Runnable {
         String response = null;
         try {
             String fields[] = message.split(MESSAGE_DELIMINATOR);
-            ClientCommandCode clientCommandCode =
-                    ClientCommandCode.values()[Integer.getInteger(fields[0])];
+            int clientCommandCode = Integer.valueOf(fields[0]);
 
             switch (clientCommandCode) {
-                case GET_GAME_LIST :
+                case ClientCommandCode.GET_GAME_LIST :
                     response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameList.toString();
                     if (response == "") {
                         response = ResponseCode.EMPTY + "";
                     }
                     break;
-                case AUTHENTICATE_USER :
+                case ClientCommandCode.AUTHENTICATE_USER :
                     GameUser userToAuth = userAccountManager.authenticateUser(fields[1],
-                            Integer.getInteger(fields[2]), socket.getInetAddress());
+                            Integer.valueOf(fields[2]), socket.getInetAddress());
                     if (userToAuth != null) {
                         response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
                     } else {
                         response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
-                case CREATE_GAME :
-                    int variantID = Integer.getInteger(fields[1]);
+                case ClientCommandCode.CREATE_GAME :
+                    int variantID = Integer.valueOf(fields[1]);
                     GameUser userGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
                     if (userAccountManager.checkUserIsAuthenticated(userGameHost)) {
                         gameList.addGame(new Game(socket, userGameHost, variantID));
@@ -107,13 +106,13 @@ public class GameServer implements Runnable {
                         response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
-                case REMOVE_GAME :
+                case ClientCommandCode.REMOVE_GAME :
                     GameUser userExGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
                     if (userExGameHost != null) {
                         gameList.removeByUser(userExGameHost);
                     }
                     break;
-                case REPORT_PLAYER :
+                case ClientCommandCode.REPORT_PLAYER :
                     //TODO: reporting system.
                     break;
             }
