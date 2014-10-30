@@ -81,9 +81,11 @@ public class GameServer implements Runnable {
 
             switch (clientCommandCode) {
                 case ClientCommandCode.GET_GAME_LIST :
-                    response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameList.toString();
-                    if (response == "") {
+                    String gameListStr = gameList.toString();
+                    if (gameListStr.equals("")) {
                         response = ResponseCode.EMPTY + "";
+                    } else {
+                        response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameListStr;
                     }
                     break;
                 case ClientCommandCode.AUTHENTICATE_USER :
