@@ -88,15 +88,17 @@ public class GameServer implements Runnable {
                         response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameListStr;
                     }
                     break;
+
                 case ClientCommandCode.AUTHENTICATE_USER :
                     GameUser userToAuth = userAccountManager.authenticateUser(fields[1],
-                            Integer.valueOf(fields[2]), socket.getInetAddress());
+                            Integer.parseInt(fields[2]), socket.getInetAddress());
                     if (userToAuth != null) {
                         response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
                     } else {
                         response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
+
                 case ClientCommandCode.CREATE_GAME :
                     int variantID = Integer.valueOf(fields[1]);
                     GameUser userGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
@@ -108,18 +110,32 @@ public class GameServer implements Runnable {
                         response = ResponseCode.BAD_LOGIN + "";
                     }
                     break;
+
                 case ClientCommandCode.REMOVE_GAME :
                     GameUser userExGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
                     if (userExGameHost != null) {
                         gameList.removeByUser(userExGameHost);
                     }
                     break;
+
                 case ClientCommandCode.REPORT_PLAYER :
                     //TODO: reporting system.
                     break;
-                case ClientCommandCode.REGISTER_ACCOUNT :
 
+                case ClientCommandCode.REGISTER_ACCOUNT :
+                    if (userAccountManager.checkUsernameIsAcceptable(fields[1])) {
+                        GameUser userToRegister = userAccountManager.registerUser(fields[1],
+                                Integer.parseInt(fields[2]), socket.getInetAddress());
+                        if (userToRegister != null) {
+                            response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToRegister.getRating();
+                        } else {
+                            response = ResponseCode.BAD_LOGIN + "";
+                        }
+                    } else {
+                        response = ResponseCode.REFUSED + "";
+                    }
                     break;
+
                 case ClientCommandCode.REPORT_GAME_RESULT :
                     //TODO: rating calculation.
                     break;

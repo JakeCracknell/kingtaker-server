@@ -91,6 +91,57 @@ public class UserAccountManager {
         return gameUser;
     }
 
+    //A client has attempted to register a new account.
+    //This method returns a new GameUser object or null if there was a problem.
+    //Pre: the name conforms to the acceptable username regex pattern.
+    //1. Check the name is not already taken
+    //2. Insert username/password combo into database.
+    //      null is returned if for any reason the user was not inserted.
+    //3. Add user to ip maps.
+    public GameUser registerUser(String username, int hashedPassword, InetAddress ip) {
+        GameUser gameUser = null;
+
+        try {
+            //Reconnect to database if the connection has been lost.
+            if (db.isClosed()) {
+                connectToDatabase();
+            }
+
+            //Prepared statement is used to minimise the risk of SQL injection
+            PreparedStatement stmt = db.prepareStatement
+                    ("SELECT * FROM tblUsers WHERE Username = ?;");
+            stmt.setString(1, username);
+            ResultSet rs = stmt.executeQuery();
+
+            //If username already exists, return null.
+            if (rs.next()) {
+                return null;
+            }
+            rs.close();
+            stmt.close();
+
+            //Insert user into database and return null if the operation failed.
+            PreparedStatement stmt2 = db.prepareStatement
+                    ("INSERT INTO tblUsers VALUES( ?, now(), ?, ? );");
+            stmt2.setString(1, username);
+            stmt2.setInt(2, GameUser.DEFAULT_USER_RATING);
+            stmt2.setInt(3, hashedPassword);
+            if (stmt2.executeUpdate() == 0) {
+                return null;
+            }
+
+            gameUser = new GameUser(username, hashedPassword);
+
+            ipToUserMap.put(ip,gameUser);
+            userToIpMap.put(gameUser,ip);
+
+        } catch (SQLException e) {
+        }
+
+        return gameUser;
+    }
+
+
     //Given an IP address of the client, gets that current user.
     //Returns null if they need to be authenticated again or were never logged in.
     //Side effect: removes user from ipToUserMap if their login time is old.
@@ -110,4 +161,10 @@ public class UserAccountManager {
     public void unauthenticateUser(GameUser user) {
         ipToUserMap.remove(userToIpMap.remove(user));
     }
+
+    private String usernameRegex = "(\\w){3,20}";
+    public boolean checkUsernameIsAcceptable(String username) {
+        return username.matches(usernameRegex);
+    }
+
 }

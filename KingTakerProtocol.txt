@@ -15,7 +15,8 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
     (no response required)
 5,username,passwordHash - register account
     0 (ok)
-    2 (account exists)
+    2 (unacceptable name)
+    4 (account exists)
 6,1 - report win
 6,0 - report loss
     0,rating
@@ -31,7 +32,7 @@ CLIENT TO CLIENT MESSAGES AND RESPONSES
 
 RESPONSE ERROR CODES:
 0 - OK
-1 - invalid operation
-2 - connection refused
+1 - invalid/unexpected operation
+2 - connection refused / access refused
 3 - requested object is empty
 4 - login fail or authentication timeout

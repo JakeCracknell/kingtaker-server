@@ -2,12 +2,13 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.net.InetAddress;
+import java.util.Date;
 
 import static org.junit.Assert.*;
 
 public class UserAccountManagerTest {
 
-    //all testUser credentials are input into database (many tests fail otherwise)
+    //all testUser credentials are already input into database (many tests fail otherwise)
     private final String testUserNameInDB = "***TESTUSER***";
     private final String testUserNameNotInDB = "***NOTATESTUSER***";
     private final int testPasswordHash = 0;
@@ -99,5 +100,61 @@ public class UserAccountManagerTest {
         uam.unauthenticateUser(testUserRogue);
 
         assertTrue(uam.checkUserIsAuthenticated(gameUser));
+    }
+
+    @Test
+    public void testRegisterUserPositive() throws Exception {
+        String uniqueTestUsername = "***test" + System.currentTimeMillis();
+        GameUser gameUser = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP1);
+        assertNotNull(gameUser);
+        assertTrue(uam.checkUserIsAuthenticated(gameUser));
+        assertEquals(uam.getUserByAddress(testIP1), gameUser);
+    }
+
+    @Test
+    public void testRegisterUserNegative() throws Exception {
+        String uniqueTestUsername = "***test" + System.currentTimeMillis();
+        GameUser gameUser1 = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP1);
+        assertNotNull(gameUser1);
+        assertTrue(uam.checkUserIsAuthenticated(gameUser1));
+        assertEquals(uam.getUserByAddress(testIP1), gameUser1);
+        GameUser gameUser2 = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP2);
+        assertNull(gameUser2);
+        assertFalse(uam.checkUserIsAuthenticated(gameUser2));
+        assertNotEquals(uam.getUserByAddress(testIP2), gameUser2);
+
+        //Also test this does not impact the first account-maker
+        assertNotNull(gameUser1);
+        assertTrue(uam.checkUserIsAuthenticated(gameUser1));
+        assertEquals(uam.getUserByAddress(testIP1), gameUser1);
+    }
+
+    @Test
+    public void testCheckUsernameTooShort() throws Exception {
+        assertFalse(uam.checkUsernameIsAcceptable(null));
+        assertFalse(uam.checkUsernameIsAcceptable(""));
+        assertFalse(uam.checkUsernameIsAcceptable("0"));
+        assertFalse(uam.checkUsernameIsAcceptable("00"));
+    }
+
+    @Test
+    public void testCheckUsernameTooLong() throws Exception {
+        assertFalse(uam.checkUsernameIsAcceptable("012345678901234567890"));
+    }
+
+    @Test
+    public void testCheckUsernameBadCharacters() throws Exception {
+        char[] badChars = new char[]{'%','!','£','@','-','#', ' ', '\'', ',' ,'\n','\t'};
+
+        for (int i = 0; i < badChars.length; i++) {
+            assertFalse(uam.checkUsernameIsAcceptable("aaa" + badChars[i]));
+        }
+    }
+
+    @Test
+    public void testCheckUsernamePositive() throws Exception {
+        assertTrue(uam.checkUsernameIsAcceptable("012"));
+        assertTrue(uam.checkUsernameIsAcceptable("01234567890123456789"));
+        assertTrue(uam.checkUsernameIsAcceptable("ABCabc_012"));
     }
 }

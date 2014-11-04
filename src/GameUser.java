@@ -4,6 +4,8 @@ import java.util.Date;
  * Created by jc4512 on 17/10/14.
  */
 public class GameUser {
+    public static final int DEFAULT_USER_RATING = 1000;
+
     private String name;
     private int rating;
     private int hashedPassword;
@@ -18,11 +20,11 @@ public class GameUser {
         this.timeLastAuthenticated = System.currentTimeMillis();
     }
 
-    public GameUser(String name, int rating) {
+    public GameUser(String name, int hashedPassword) {
         this.name = name;
-        this.rating = rating;
-        this.hashedPassword = 0;
-        this.dateJoined = null;
+        this.rating = DEFAULT_USER_RATING;
+        this.hashedPassword = hashedPassword;
+        this.dateJoined = new Date();
     }
 
     public String getName() {
