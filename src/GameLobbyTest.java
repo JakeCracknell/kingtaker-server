@@ -31,7 +31,7 @@ public class GameLobbyTest {
             lobby.addGame(getTestGame());
         }
 
-        String regex = "\\{\\d+\\.\\d+\\.\\d+\\.\\d+,\\w+,\\d+,\\d+\\}(,\\{\\d+\\.\\d+\\.\\d+\\.\\d+,\\w+,\\d+,\\d+\\})+";
+        String regex = "\\{\\d+\\.\\d+\\.\\d+\\.\\d+,\\w+,\\d+,\\d+\\}(,\\{\\d+\\.\\d+\\.\\d+\\.\\d+,\\w+,\\d+,\\d+\\})*";
         assertTrue(lobby.toString().matches(regex));
     }
 

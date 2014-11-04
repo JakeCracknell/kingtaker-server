@@ -104,7 +104,7 @@ public class UserAccountManagerTest {
 
     @Test
     public void testRegisterUserPositive() throws Exception {
-        String uniqueTestUsername = "***test" + System.currentTimeMillis();
+        String uniqueTestUsername = "test" + System.currentTimeMillis();
         GameUser gameUser = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP1);
         assertNotNull(gameUser);
         assertTrue(uam.checkUserIsAuthenticated(gameUser));
@@ -113,7 +113,7 @@ public class UserAccountManagerTest {
 
     @Test
     public void testRegisterUserNegative() throws Exception {
-        String uniqueTestUsername = "***test" + System.currentTimeMillis();
+        String uniqueTestUsername = "test" + System.currentTimeMillis();
         GameUser gameUser1 = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP1);
         assertNotNull(gameUser1);
         assertTrue(uam.checkUserIsAuthenticated(gameUser1));
