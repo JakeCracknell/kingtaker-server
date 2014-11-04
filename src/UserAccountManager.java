@@ -12,7 +12,7 @@ public class UserAccountManager {
     private static final String DB_PATH = "jdbc:postgresql://db:5432/jc4512";
     private static final String DB_PASSWORD = "P5iKp1JYXf";
 
-    private final String usernameRegex = "(\\w){3,20}";
+    private final String USERNAME_REGEX = "(\\w){3,20}";
     private static final int CLIENT_AUTHENTICATION_TIMEOUT_MS = 1000*60*60; //1 hour
 
     private Connection db;
@@ -165,7 +165,7 @@ public class UserAccountManager {
     }
 
     public boolean checkUsernameIsAcceptable(String username) {
-        return username != null && username.matches(usernameRegex);
+        return username != null && username.matches(USERNAME_REGEX);
     }
 
 }
