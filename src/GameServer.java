@@ -14,6 +14,7 @@ import java.net.Socket;
 public class GameServer implements Runnable {
     private static final String MESSAGE_DELIMINATOR = ",";
     private static final int LISTENER_PORT = 4444;
+    private GameServerResponder gameServerResponder;
 
     private ServerSocket sktListener;
     private GameLobby gameList;
@@ -29,6 +30,10 @@ public class GameServer implements Runnable {
         //connection is unavailable. Exits if driver/library is not found.
         System.out.println("Initialising user account manager...");
         userAccountManager = new UserAccountManager();
+
+        //Initialise responder.
+        System.out.println("Initialising game server responder...");
+        gameServerResponder = new GameServerResponder(gameList, userAccountManager);
 
         //Initialise listener - keep attempting until successful.
         System.out.println("Initialising listening socket...");
@@ -71,129 +76,51 @@ public class GameServer implements Runnable {
     }
 
     //Splits message into fields, then switch on the first, which specifies the opcode.
-    //If it parses correctly, the server will perform any requested actions and/or return
-    // information. Otherwise, it will return the INVALID error code.
+    //Delegates to the appropriate method in GameServerResponder.
+    //If it parses correctly, an appropriate response will be returned and any
+    // requested actions will be completed. Otherwise, it will return the INVALID code.
     private String processMessageAndGetResponse(Socket socket, String message) {
         String response = null;
         try {
-            String fields[] = message.split(MESSAGE_DELIMINATOR);
+            String fields[] = message.split(ResponseCode.DEL);
             int clientCommandCode = Integer.valueOf(fields[0]);
 
             switch (clientCommandCode) {
                 case ClientCommandCode.GET_GAME_LIST :
-                    response = cmd_GetGameList();
+                    response = gameServerResponder.getGameList();
                     break;
 
                 case ClientCommandCode.AUTHENTICATE_USER :
-                    response = cmd_AuthenticateUser(socket, fields[1], fields[2]);
+                    response = gameServerResponder.authenticateUser(socket, fields[1], fields[2]);
                     break;
 
                 case ClientCommandCode.CREATE_GAME :
-                    response = cmd_CreateGame(socket, fields[1]);
+                    response = gameServerResponder.createGame(socket, fields[1]);
                     break;
 
                 case ClientCommandCode.REMOVE_GAME :
-                    cmd_RemoveGame(socket);
+                    gameServerResponder.removeGame(socket);
                     break;
 
                 case ClientCommandCode.REPORT_PLAYER :
-                    cmd_ReportPlayer(fields[1]);
+                    gameServerResponder.reportPlayer(fields[1]);
                     break;
 
                 case ClientCommandCode.REGISTER_ACCOUNT :
-                    response = cmd_RegisterAccount(socket, fields[1], fields[2]);
+                    response = gameServerResponder.registerAccount(socket, fields[1], fields[2]);
                     break;
 
                 case ClientCommandCode.REPORT_GAME_RESULT :
-                    response = cmd_ReportGameResult(socket, fields[1], fields[2]);
+                    response = gameServerResponder.reportGameResult(socket, fields[1], fields[2]);
                     break;
             }
 
         } catch (Exception e) {
+            //Is only supposed to occur if the message is malformed and fields[n] is out of bounds,
+            //throwing an ArrayIndexOutOfBoundsException.
             response = ResponseCode.INVALID + "";
         }
         return response;
     }
 
-    private String cmd_ReportGameResult(Socket socket, String winOrLoss, String opponentUsername) {
-        //TODO: ratings
-        //Return what their new rating would be provided the other party agrees on the result.
-        //Make a class that stores pending gameresults
-        // If the other party disagrees, the gameresult does not go
-        //through.
-
-        GameUser gameUser = userAccountManager.getUserByAddress(socket.getInetAddress());
-        //GameUser opponent = userAccountManager.getUserByName(opponentUsername);
-        if (winOrLoss.equals("1")) {
-            //win
-        } else if (winOrLoss.equals("0")) {
-            //loss
-        } else {
-            return ResponseCode.INVALID + "";
-        }
-        return ResponseCode.OK + MESSAGE_DELIMINATOR + gameUser.getRating();
-    }
-
-    private String cmd_RegisterAccount(Socket socket, String username, String passwordHash) {
-        String response;
-        if (userAccountManager.checkUsernameIsAcceptable(username)) {
-            GameUser userToRegister = userAccountManager.registerUser(username,
-                    Integer.parseInt(passwordHash), socket.getInetAddress());
-            if (userToRegister != null) {
-                response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToRegister.getRating();
-            } else {
-                response = ResponseCode.BAD_LOGIN + "";
-            }
-        } else {
-            response = ResponseCode.REFUSED + "";
-        }
-        return response;
-    }
-
-    private void cmd_ReportPlayer(String offenderName) {
-        //TODO reporting players
-    }
-
-    private void cmd_RemoveGame(Socket socket) {
-        GameUser userExGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
-        if (userExGameHost != null) {
-            gameList.removeByUser(userExGameHost);
-        }
-    }
-
-    private String cmd_CreateGame(Socket socket, String variantID) {
-        String response;
-        GameUser userGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
-        if (userAccountManager.checkUserIsAuthenticated(userGameHost)) {
-            gameList.addGame(new Game(socket, userGameHost, Integer.valueOf(variantID)));
-            response = ResponseCode.OK + "";
-        } else {
-            userAccountManager.unauthenticateUser(userGameHost);
-            response = ResponseCode.BAD_LOGIN + "";
-        }
-        return response;
-    }
-
-    private String cmd_AuthenticateUser(Socket socket, String username, String passwordHash) {
-        String response;
-        GameUser userToAuth = userAccountManager.authenticateUser(username,
-                Integer.parseInt(passwordHash), socket.getInetAddress());
-        if (userToAuth != null) {
-            response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
-        } else {
-            response = ResponseCode.BAD_LOGIN + "";
-        }
-        return response;
-    }
-
-    private String cmd_GetGameList() {
-        String response;
-        String gameListStr = gameList.toString();
-        if (gameListStr.equals("")) {
-            response = ResponseCode.EMPTY + "";
-        } else {
-            response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameListStr;
-        }
-        return response;
-    }
 }

@@ -9,4 +9,6 @@ public class ResponseCode {
     public final static int REFUSED = 2;
     public final static int EMPTY = 3;
     public final static int BAD_LOGIN = 4;
+
+    public final static String DEL = ",";
 }
