@@ -4,7 +4,8 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
     3 (empty)
 1,username,passwordHash - authenticate user
     0,rating
-    1 (invalid)
+    4 (wrong un/pw)
+    2 (banned)
 2,variantID - create game
     0 (ok)
     4 (auth timeout)
@@ -12,6 +13,13 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
     (no response required)
 4,username - report player
     (no response required)
+5,username,passwordHash - register account
+    0 (ok)
+    2 (account exists)
+6,1 - report win
+6,0 - report loss
+    0,rating
+
 
 CLIENT TO CLIENT MESSAGES AND RESPONSES
 0,username,rating - connect to open game
@@ -23,7 +31,7 @@ CLIENT TO CLIENT MESSAGES AND RESPONSES
 
 RESPONSE ERROR CODES:
 0 - OK
-1 - invalid operation (game move)
+1 - invalid operation
 2 - connection refused
 3 - requested object is empty
 4 - login fail or authentication timeout

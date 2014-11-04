@@ -117,6 +117,12 @@ public class GameServer implements Runnable {
                 case ClientCommandCode.REPORT_PLAYER :
                     //TODO: reporting system.
                     break;
+                case ClientCommandCode.REGISTER_ACCOUNT :
+
+                    break;
+                case ClientCommandCode.REPORT_GAME_RESULT :
+                    //TODO: rating calculation.
+                    break;
             }
 
         } catch (Exception e) {
