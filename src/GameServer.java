@@ -81,59 +81,27 @@ public class GameServer implements Runnable {
 
             switch (clientCommandCode) {
                 case ClientCommandCode.GET_GAME_LIST :
-                    String gameListStr = gameList.toString();
-                    if (gameListStr.equals("")) {
-                        response = ResponseCode.EMPTY + "";
-                    } else {
-                        response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameListStr;
-                    }
+                    response = cmd_GetGameList();
                     break;
 
                 case ClientCommandCode.AUTHENTICATE_USER :
-                    GameUser userToAuth = userAccountManager.authenticateUser(fields[1],
-                            Integer.parseInt(fields[2]), socket.getInetAddress());
-                    if (userToAuth != null) {
-                        response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
-                    } else {
-                        response = ResponseCode.BAD_LOGIN + "";
-                    }
+                    response = cmd_AuthenticateUser(socket, fields[1], fields[2]);
                     break;
 
                 case ClientCommandCode.CREATE_GAME :
-                    int variantID = Integer.valueOf(fields[1]);
-                    GameUser userGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
-                    if (userAccountManager.checkUserIsAuthenticated(userGameHost)) {
-                        gameList.addGame(new Game(socket, userGameHost, variantID));
-                        response = ResponseCode.OK + "";
-                    } else {
-                        userAccountManager.unauthenticateUser(userGameHost);
-                        response = ResponseCode.BAD_LOGIN + "";
-                    }
+                    response = cmd_CreateGame(socket, fields[1]);
                     break;
 
                 case ClientCommandCode.REMOVE_GAME :
-                    GameUser userExGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
-                    if (userExGameHost != null) {
-                        gameList.removeByUser(userExGameHost);
-                    }
+                    cmd_RemoveGame(socket);
                     break;
 
                 case ClientCommandCode.REPORT_PLAYER :
-                    //TODO: reporting system.
+                    cmd_ReportPlayer(fields[1]);
                     break;
 
                 case ClientCommandCode.REGISTER_ACCOUNT :
-                    if (userAccountManager.checkUsernameIsAcceptable(fields[1])) {
-                        GameUser userToRegister = userAccountManager.registerUser(fields[1],
-                                Integer.parseInt(fields[2]), socket.getInetAddress());
-                        if (userToRegister != null) {
-                            response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToRegister.getRating();
-                        } else {
-                            response = ResponseCode.BAD_LOGIN + "";
-                        }
-                    } else {
-                        response = ResponseCode.REFUSED + "";
-                    }
+                    response = cmd_RegisterAccount(socket, fields[1], fields[2]);
                     break;
 
                 case ClientCommandCode.REPORT_GAME_RESULT :
@@ -143,6 +111,69 @@ public class GameServer implements Runnable {
 
         } catch (Exception e) {
             response = ResponseCode.INVALID + "";
+        }
+        return response;
+    }
+
+    private String cmd_RegisterAccount(Socket socket, String username, String passwordHash) {
+        String response;
+        if (userAccountManager.checkUsernameIsAcceptable(username)) {
+            GameUser userToRegister = userAccountManager.registerUser(username,
+                    Integer.parseInt(passwordHash), socket.getInetAddress());
+            if (userToRegister != null) {
+                response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToRegister.getRating();
+            } else {
+                response = ResponseCode.BAD_LOGIN + "";
+            }
+        } else {
+            response = ResponseCode.REFUSED + "";
+        }
+        return response;
+    }
+
+    private void cmd_ReportPlayer(String offenderName) {
+        //TODO reporting players
+    }
+
+    private void cmd_RemoveGame(Socket socket) {
+        GameUser userExGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
+        if (userExGameHost != null) {
+            gameList.removeByUser(userExGameHost);
+        }
+    }
+
+    private String cmd_CreateGame(Socket socket, String variantID) {
+        String response;
+        GameUser userGameHost = userAccountManager.getUserByAddress(socket.getInetAddress());
+        if (userAccountManager.checkUserIsAuthenticated(userGameHost)) {
+            gameList.addGame(new Game(socket, userGameHost, Integer.valueOf(variantID)));
+            response = ResponseCode.OK + "";
+        } else {
+            userAccountManager.unauthenticateUser(userGameHost);
+            response = ResponseCode.BAD_LOGIN + "";
+        }
+        return response;
+    }
+
+    private String cmd_AuthenticateUser(Socket socket, String username, String passwordHash) {
+        String response;
+        GameUser userToAuth = userAccountManager.authenticateUser(username,
+                Integer.parseInt(passwordHash), socket.getInetAddress());
+        if (userToAuth != null) {
+            response = ResponseCode.OK + MESSAGE_DELIMINATOR + userToAuth.getRating() + "";
+        } else {
+            response = ResponseCode.BAD_LOGIN + "";
+        }
+        return response;
+    }
+
+    private String cmd_GetGameList() {
+        String response;
+        String gameListStr = gameList.toString();
+        if (gameListStr.equals("")) {
+            response = ResponseCode.EMPTY + "";
+        } else {
+            response = ResponseCode.OK + MESSAGE_DELIMINATOR + gameListStr;
         }
         return response;
     }
