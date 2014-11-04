@@ -121,7 +121,7 @@ public class UserAccountManagerTest {
         GameUser gameUser2 = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP2);
         assertNull(gameUser2);
         assertFalse(uam.checkUserIsAuthenticated(gameUser2));
-        assertNotEquals(uam.getUserByAddress(testIP2), gameUser2);
+        assertNotEquals(uam.getUserByAddress(testIP1), gameUser2);
 
         //Also test this does not impact the first account-maker
         assertNotNull(gameUser1);

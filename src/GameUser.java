@@ -12,6 +12,7 @@ public class GameUser {
     private Date dateJoined;
     private long timeLastAuthenticated;
 
+    //Used for existing accounts - details pulled from DB via UserAccountManager
     public GameUser(String name, int rating, int hashedPassword, Date dateJoined) {
         this.name = name;
         this.rating = rating;
@@ -20,11 +21,13 @@ public class GameUser {
         this.timeLastAuthenticated = System.currentTimeMillis();
     }
 
+    //Used for new accounts.
     public GameUser(String name, int hashedPassword) {
         this.name = name;
         this.rating = DEFAULT_USER_RATING;
         this.hashedPassword = hashedPassword;
         this.dateJoined = new Date();
+        this.timeLastAuthenticated = System.currentTimeMillis();
     }
 
     public String getName() {
