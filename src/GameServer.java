@@ -105,7 +105,7 @@ public class GameServer implements Runnable {
                     break;
 
                 case ClientCommandCode.REPORT_GAME_RESULT :
-                    //TODO: rating calculation.
+                    response = cmd_ReportGameResult(socket, fields[1], fields[2]);
                     break;
             }
 
@@ -113,6 +113,25 @@ public class GameServer implements Runnable {
             response = ResponseCode.INVALID + "";
         }
         return response;
+    }
+
+    private String cmd_ReportGameResult(Socket socket, String winOrLoss, String opponentUsername) {
+        //TODO: ratings
+        //Return what their new rating would be provided the other party agrees on the result.
+        //Make a class that stores pending gameresults
+        // If the other party disagrees, the gameresult does not go
+        //through.
+
+        GameUser gameUser = userAccountManager.getUserByAddress(socket.getInetAddress());
+        //GameUser opponent = userAccountManager.getUserByName(opponentUsername);
+        if (winOrLoss.equals("1")) {
+            //win
+        } else if (winOrLoss.equals("0")) {
+            //loss
+        } else {
+            return ResponseCode.INVALID + "";
+        }
+        return ResponseCode.OK + MESSAGE_DELIMINATOR + gameUser.getRating();
     }
 
     private String cmd_RegisterAccount(Socket socket, String username, String passwordHash) {
