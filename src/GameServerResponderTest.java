@@ -17,6 +17,10 @@ public class GameServerResponderTest {
     private Socket testSocketGoogle; //uses google web server
     private String testPW = "0";
     private String testVID = "1";
+
+    private String getTestUsername() {
+        return "test" + System.currentTimeMillis();
+    }
     
     @Before
     public void setUp() throws Exception {
@@ -32,14 +36,14 @@ public class GameServerResponderTest {
 
     @Test
     public void testRegisterAccountPositive() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
-        String response = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
+        String uniqueTestUsername = getTestUsername();
+        String response = gsr.registerAccount(testSocketBBC, getTestUsername(), testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response);
     }
 
     @Test
     public void testRegisterAccountExists() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        String uniqueTestUsername = getTestUsername();
         String response = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response);
         String response2 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
@@ -62,7 +66,7 @@ public class GameServerResponderTest {
     }
     @Test
     public void testAuthenticateUserPositive() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        String uniqueTestUsername = getTestUsername();
         String response = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response);
     }
@@ -75,7 +79,7 @@ public class GameServerResponderTest {
 
     @Test
     public void testCreateGamePositive() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        String uniqueTestUsername = getTestUsername();
         String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
 
@@ -97,7 +101,7 @@ public class GameServerResponderTest {
 
     @Test
     public void testGetGameListNonEmpty() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        String uniqueTestUsername = getTestUsername();
         String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
 
@@ -119,7 +123,7 @@ public class GameServerResponderTest {
     //Gets game list, gets EMPTY code
     //Logs in again successfully from the same IP
     public void gameServerSystemTest1() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        String uniqueTestUsername = getTestUsername();
         String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
 
@@ -145,7 +149,7 @@ public class GameServerResponderTest {
     //Google can create a new game.
     //BBC sees this game when requesting the lobby
     public void gameServerSystemTest2() throws Exception {
-        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        String uniqueTestUsername = getTestUsername();
         String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
 
