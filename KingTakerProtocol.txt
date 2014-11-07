@@ -24,10 +24,12 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
 
 CLIENT TO CLIENT MESSAGES AND RESPONSES
 0,username,rating - connect to open game
+    0,0,board (ok - I am white, here is the board)
+    0,1,board (ok - I am black, here is the board)
+    2 (refused)
+1,moveNo,old.x,old.y,new.x,new.y,[promotion] - send move
     0 (ok)
     2 (refused)
-1,moveNo,oldLocation.toString(),newLocation.toString() - send move
-    0 (ok)
 
 
 RESPONSE ERROR CODES:

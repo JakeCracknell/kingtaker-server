@@ -66,7 +66,6 @@ public class GameServer implements Runnable {
                     System.out.println("[" + sktClient.getInetAddress().getHostAddress() + "] no response required");
                 }
 
-                //TODO: is this needed?
                 clientReader.close();
                 sktClient.close();
             } catch (IOException e) {
