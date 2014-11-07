@@ -50,4 +50,17 @@ public class GameLobbyTest {
         return new Game(testSocket,testUser,1);
     }
 
+//    //Test will fail unless the refresh and timeout constants are set below 300
+//    @Test
+//    public void testGameTimeout() throws Exception {
+//        GameLobby lobby = new GameLobby();
+//        lobby.addGame(getTestGame());
+//        String regex = "\\{\\d+\\.\\d+\\.\\d+\\.\\d+,\\w+,\\d+,\\d+\\}";
+//        assertTrue(lobby.toString().matches(regex));
+//
+//        Thread.sleep(1000);
+//
+//        assertTrue(lobby.toString().equals(""));
+//    }
+
 }

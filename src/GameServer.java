@@ -22,7 +22,7 @@ public class GameServer implements Runnable {
 
     @Override
     public void run() {
-        //Create empty game lobby
+        //Create empty game lobby and start a new thread to remove old games.
         System.out.println("Initialising lobby...");
         gameList = new GameLobby();
 
@@ -82,7 +82,7 @@ public class GameServer implements Runnable {
     private String processMessageAndGetResponse(Socket socket, String message) {
         String response = null;
         try {
-            String fields[] = message.split(ResponseCode.DEL);
+            String fields[] = message.split(ClientCommandCode.DEL);
             int clientCommandCode = Integer.valueOf(fields[0]);
 
             switch (clientCommandCode) {

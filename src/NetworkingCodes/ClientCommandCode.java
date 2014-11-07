@@ -12,5 +12,5 @@ public class ClientCommandCode {
     public final static int REGISTER_ACCOUNT = 5;
     public final static int REPORT_GAME_RESULT = 6;
 
-    public final static String DELIMINATOR = ",";
+    public final static String DEL = ",";
 }
