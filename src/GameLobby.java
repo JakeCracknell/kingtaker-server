@@ -46,7 +46,7 @@ public class GameLobby implements Runnable {
         for (int i = 0; i < games.size(); i++) {
             if (((new Date()).getTime() -
                     games.get(i).getCreationDate().getTime())
-                    < OPEN_GAME_TIMEOUT_MS) {
+                    > OPEN_GAME_TIMEOUT_MS) {
                 games.remove(i);
             }
         }
