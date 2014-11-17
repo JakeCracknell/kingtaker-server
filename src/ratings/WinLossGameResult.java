@@ -19,4 +19,9 @@ public class WinLossGameResult extends GameResult {
     public void calculateNewRatings() {
 
     }
+
+    @Override
+    public String toString() {
+        return winner.getName() + loser.getName();
+    }
 }

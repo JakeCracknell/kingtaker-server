@@ -20,16 +20,29 @@ public class RatingManager {
         this.userAccountManager = userAccountManager;
     }
 
-    public void submitRating(GameUser reporter, GameUser opponent, GameResultType outcome) {
-        GameResult result = new WinLossGameResult();
-        result.winner = winner;
-        result.loser = loser;
-
-        if (pendingResults.contains(result)) {
-            result.process();
+    //Submits a request to change two player's ratings.
+    //Returns the submitter's new rating, pending approval.
+    public int submitRating(GameUser reporter, GameUser opponent, GameResultType outcome) {
+        GameResult result = null;
+        switch (outcome) {
+            case WIN:
+                result = new WinLossGameResult(reporter, opponent);
+                break;
+            case LOSS:
+                result = new WinLossGameResult(opponent, reporter);
+                break;
+            case DRAW:
+                result = new DrawGameResult(reporter, opponent);
+                break;
         }
 
-        pendingResults.add(result);
+        if (pendingResults.contains(result)) {
+            pendingResults.remove(result);
+            result.process(userAccountManager);
+        } else {
+            pendingResults.add(result);
+        }
+
     }
 
     //The outcome of the game from the point of view of the reporter.

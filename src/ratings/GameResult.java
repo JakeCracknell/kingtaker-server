@@ -6,6 +6,7 @@ import ;import users.UserAccountManager;
  */
 public abstract class GameResult {
     public abstract void calculateNewRatings();
+    public abstract String toString();
 
     public void process(UserAccountManager userAccountManager) {
         int winnerRating;
@@ -20,16 +21,11 @@ public abstract class GameResult {
 
         GameResult that = (GameResult) o;
 
-        if (loser != null ? !loser.equals(that.loser) : that.loser != null) return false;
-        if (winner != null ? !winner.equals(that.winner) : that.winner != null) return false;
-
-        return true;
+        return this.toString().equals(that.toString());
     }
 
     @Override
     public int hashCode() {
-        int result = winner != null ? winner.hashCode() : 0;
-        result = 31 * result + (loser != null ? loser.hashCode() : 0);
-        return result;
+        return this.toString().hashCode();
     }
 }
