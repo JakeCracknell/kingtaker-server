@@ -1,4 +1,6 @@
 import NetworkingCodes.ResponseCode;
+import users.GameUser;
+import users.UserAccountManager;
 
 import java.net.Socket;
 
@@ -20,15 +22,22 @@ public class GameServerResponder {
         // If the other party disagrees, the gameresult does not go
         //through.
 
-        GameUser gameUser = userAccountManager.getUserByAddress(socket.getInetAddress());
+        GameUser userReporter = userAccountManager.getUserByAddress(socket.getInetAddress());
+        GameUser userOpponent = userAccountManager.getUserByName(opponentUsername);
+
         //GameUser opponent = userAccountManager.getUserByName(opponentUsername);
-        if (winOrLoss.equals("1")) {
+        if (winOrLoss.equals("0")) {
             //win
-        } else if (winOrLoss.equals("0")) {
+        } else if (winOrLoss.equals("1")) {
+            //draw
+        } else if (winOrLoss.equals("2")) {
             //loss
         } else {
             return ResponseCode.INVALID + "";
         }
+
+
+
         return ResponseCode.OK + ResponseCode.DEL + gameUser.getRating();
     }
 

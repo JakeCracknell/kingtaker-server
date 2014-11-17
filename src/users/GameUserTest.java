@@ -1,5 +1,8 @@
+package users;
+
 import org.junit.Before;
 import org.junit.Test;
+import users.GameUser;
 
 import java.util.Date;
 

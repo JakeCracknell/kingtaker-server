@@ -1,3 +1,5 @@
+package users;
+
 import java.util.Date;
 
 /**
@@ -11,6 +13,7 @@ public class GameUser {
     private int hashedPassword;
     private Date dateJoined;
     private long timeLastAuthenticated;
+    private int pendingRating;
 
     //Used for existing accounts - details pulled from DB via UserAccountManager
     public GameUser(String name, int rating, int hashedPassword, Date dateJoined) {
@@ -44,6 +47,13 @@ public class GameUser {
 
     public long getTimeSinceAuthenticated() {
         return System.currentTimeMillis() - timeLastAuthenticated;
+    }
+
+    public int getPendingRating() {
+        if (pendingRating == 0) {
+            return rating;
+        }
+        return pendingRating;
     }
 
     @Override

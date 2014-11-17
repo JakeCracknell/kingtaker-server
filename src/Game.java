@@ -1,3 +1,5 @@
+import users.GameUser;
+
 import java.net.Socket;
 import java.util.Date;
 

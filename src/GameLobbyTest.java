@@ -1,5 +1,5 @@
-import org.junit.Before;
 import org.junit.Test;
+import users.GameUser;
 
 import java.net.Socket;
 

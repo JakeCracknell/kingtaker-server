@@ -1,6 +1,8 @@
-/**
+package users; /**
  * Created by jc4512 on 17/10/14.
  */
+
+import users.GameUser;
 
 import java.net.InetAddress;
 import java.sql.*;

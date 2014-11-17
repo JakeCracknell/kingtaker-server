@@ -1,8 +1,11 @@
+package users;
+
 import org.junit.Before;
 import org.junit.Test;
+import users.GameUser;
+import users.UserAccountManager;
 
 import java.net.InetAddress;
-import java.util.Date;
 
 import static org.junit.Assert.*;
 

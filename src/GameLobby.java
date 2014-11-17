@@ -1,3 +1,5 @@
+import users.GameUser;
+
 import java.util.ArrayList;
 import java.util.Date;
 
