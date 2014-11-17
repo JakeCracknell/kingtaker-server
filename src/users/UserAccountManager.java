@@ -22,6 +22,7 @@ public class UserAccountManager {
     //Maps used to hold authenticated users/ips.
     private Map<InetAddress, GameUser> ipToUserMap;
     private Map<GameUser, InetAddress> userToIpMap;
+    private Map<String, GameUser> usernameToUserMap;
 
     public UserAccountManager() {
         //Exit if the driver is missing
@@ -38,6 +39,7 @@ public class UserAccountManager {
         //Initialise authenticated users/ips map.
         ipToUserMap = new HashMap<InetAddress, GameUser>();
         userToIpMap = new HashMap<GameUser, InetAddress>();
+        usernameToUserMap = new HashMap<String, GameUser>();
     }
 
     //Keeps reattempting to connect to the database in an infinite loop
@@ -86,8 +88,9 @@ public class UserAccountManager {
             stmt.close();
 
             unauthenticateUser(gameUser);
-            ipToUserMap.put(ip,gameUser);
-            userToIpMap.put(gameUser,ip);
+            ipToUserMap.put(ip, gameUser);
+            userToIpMap.put(gameUser, ip);
+            usernameToUserMap.put(username, gameUser);
 
         } catch (SQLException e) {
         }
@@ -138,6 +141,7 @@ public class UserAccountManager {
 
             ipToUserMap.put(ip,gameUser);
             userToIpMap.put(gameUser,ip);
+            usernameToUserMap.put(username, gameUser);
 
         } catch (SQLException e) {
         }
@@ -147,10 +151,15 @@ public class UserAccountManager {
 
 
     //Given an IP address of the client, gets that current user.
-    //Returns null if they need to be authenticated again or were never logged in.
-    //Side effect: removes user from ipToUserMap if their login time is old.
+    //Returns null if they were never logged in.
     public GameUser getUserByAddress(InetAddress ip) {
         return ipToUserMap.get(ip);
+    }
+
+    //Given an IP address of the client, gets that current user.
+    //Returns null if they were never logged in.
+    public GameUser getUserByName(String username) {
+        return usernameToUserMap.get(username);
     }
 
     //Checks user was authenticated and their timeout hasn't elapsed.
@@ -164,6 +173,7 @@ public class UserAccountManager {
     //Removes user/ip from hashmaps. They will need to authenticate themselves again.
     public void unauthenticateUser(GameUser user) {
         ipToUserMap.remove(userToIpMap.remove(user));
+        usernameToUserMap.remove(user.getName());
     }
 
     public boolean checkUsernameIsAcceptable(String username) {

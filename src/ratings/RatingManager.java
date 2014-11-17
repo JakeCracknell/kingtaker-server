@@ -42,7 +42,7 @@ public class RatingManager {
         } else {
             pendingResults.add(result);
         }
-
+        return 0;
     }
 
     //The outcome of the game from the point of view of the reporter.

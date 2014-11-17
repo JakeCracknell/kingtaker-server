@@ -38,7 +38,7 @@ public class GameServerResponder {
 
 
 
-        return ResponseCode.OK + ResponseCode.DEL + gameUser.getRating();
+        return ResponseCode.OK + ResponseCode.DEL + userReporter.getRating();
     }
 
     public String registerAccount(Socket socket, String username, String passwordHash) {

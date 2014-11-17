@@ -1,5 +1,5 @@
 package ratings;
-import ;import users.UserAccountManager;
+import users.UserAccountManager;
 
 /**
  * Created by jc4512 on 17/11/14.
@@ -11,7 +11,7 @@ public abstract class GameResult {
     public void process(UserAccountManager userAccountManager) {
         int winnerRating;
         int loserRating;
-        userAccountManager.updateUserRatings(winner, winnerRating, loser, loserRating);
+        //userAccountManager.updateUserRatings(winner, winnerRating, loser, loserRating);
     }
 
     @Override

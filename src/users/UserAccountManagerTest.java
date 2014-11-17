@@ -160,4 +160,19 @@ public class UserAccountManagerTest {
         assertTrue(uam.checkUsernameIsAcceptable("01234567890123456789"));
         assertTrue(uam.checkUsernameIsAcceptable("ABCabc_012"));
     }
+
+    @Test
+    public void testGetUserByUsernamePositive() throws Exception {
+        GameUser gameUser1 = uam.authenticateUser(testUserNameInDB, testPasswordHash, testIP1);
+        GameUser gameUser2 = uam.getUserByName(testUserNameInDB);
+        assertEquals(gameUser1.getDateJoined(), gameUser2.getDateJoined());
+        assertEquals(gameUser1, gameUser2);
+    }
+
+    @Test
+    public void testGetUserByUsernameNegative() throws Exception {
+        GameUser gameUser1 = uam.authenticateUser(testUserNameInDB, testPasswordHash, testIP1);
+        GameUser gameUser2 = uam.getUserByName(testUserNameNotInDB);
+        assertNull(gameUser2);
+    }
 }
