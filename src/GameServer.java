@@ -35,6 +35,7 @@ public class GameServer implements Runnable {
         userAccountManager = new UserAccountManager();
 
         //Initialise new rating manager, with an empty list of pending games.
+        //Starts a new thread to remove old pending game results.
         System.out.println("Initialising user rating manager...");
         ratingManager = new RatingManager(userAccountManager);
 

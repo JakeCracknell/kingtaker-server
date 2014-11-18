@@ -58,6 +58,13 @@ public class RatingManager implements Runnable {
         return reporter.getPendingRating();
     }
 
+    // Used for debugging and testing.
+    public synchronized int getPendingResultsCount() {
+        return pendingResults.size();
+    }
+
+    // Removes any pending results (games reported as won/lost/drawn and
+    // the other player has not confirmed).
     private synchronized void removeOldPendingResults() {
         for (int i = 0; i < pendingResults.size(); i++) {
             if (((new Date()).getTime() -

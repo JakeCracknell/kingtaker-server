@@ -220,5 +220,18 @@ public class RatingManagerTest {
         assertEquals(ratingC2, userC2.getRating());
     }
 
+//    //Test will fail unless the refresh and timeout constants are set below 300
+//    @Test
+//    public void testGameTimeout() throws Exception {
+//        GameUser user1 = uam.getUserByName(testUserName1);
+//        GameUser user2 = uam.getUserByName(testUserName2);
+//        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
+//
+//        assertTrue(rm.getPendingResultsCount() == 1);
+//
+//        Thread.sleep(1000);
+//
+//        assertTrue(rm.getPendingResultsCount() == 0);
+//    }
 
 }
