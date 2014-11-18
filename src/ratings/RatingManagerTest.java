@@ -105,7 +105,49 @@ public class RatingManagerTest {
         assertEquals(rating2, user2.getRating());
     }
 
+    @Test
+    public void testSubmitRatingDrawPositive() throws Exception {
+        GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
+        GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
+        user2.setRating(user1.getRating() / 2);
+        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
+        int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.DRAW);
 
+        //Supposed to be processed, pending ratings confirmed.
 
+        assertEquals(rating1, user1.getRating());
+        assertEquals(rating2, user2.getRating());
+    }
 
+    @Test
+    public void testSubmitRatingDisagreement() throws Exception {
+        //Both users claim to have won the game
+        GameUser user1 = uam.getUserByName(testUserName1);
+        GameUser user2 = uam.getUserByName(testUserName2);
+        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
+        int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.WIN);
+
+        //Not supposed to be processed.
+
+        assertNotEquals(rating1, user1.getRating());
+        assertNotEquals(rating2, user2.getRating());
+    }
+
+    @Test
+    public void testSubmitRatingOnePlayer() throws Exception {
+        //Both users claim to have won the game
+        GameUser user1 = uam.getUserByName(testUserName1);
+        GameUser user2 = uam.getUserByName(testUserName2);
+        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
+
+        //Not supposed to be processed.
+
+        assertNotEquals(rating1, user1.getRating());
+
+        rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
+
+        //Still not supposed to be processed.
+
+        assertNotEquals(rating1, user1.getRating());
+    }
 }
