@@ -3,6 +3,7 @@ import users.GameUser;
 import users.UserAccountManager;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by jc4512 on 17/11/14.
@@ -15,6 +16,7 @@ public abstract class GameResult {
     public abstract String toString();
 
     protected GameUser firstReporter;
+    private Date creationDate = new Date();
 
     public void process(UserAccountManager userAccountManager) {
         // For each user associated with this game result, turn their pending
@@ -43,4 +45,7 @@ public abstract class GameResult {
         return this.toString().hashCode();
     }
 
+    public Date getDate() {
+        return creationDate;
+    }
 }
