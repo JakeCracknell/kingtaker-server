@@ -32,6 +32,13 @@ public class RatingManagerTest {
         return "test" + System.currentTimeMillis();
     }
 
+    // Used for tests requiring more than 2 users. Thread sleep is used to
+    // ensure the username is unique.
+    public GameUser getNewAuthenticatedUser() throws Exception {
+        Thread.sleep(2);
+        return uam.registerUser(getTestUsername(), 0, InetAddress.getByAddress(new byte[]{8, 8, 8, 8}));
+    }
+
     @Test
     public void testSubmitRatingReturnResultWin() throws Exception {
         GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
@@ -98,6 +105,7 @@ public class RatingManagerTest {
         GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
         int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.LOSS);
+        assertTrue(rating1 > rating2);
 
         //Supposed to be processed, pending ratings confirmed.
 
@@ -112,6 +120,7 @@ public class RatingManagerTest {
         user2.setRating(user1.getRating() / 2);
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
         int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.DRAW);
+        assertTrue(rating1 < rating2);
 
         //Supposed to be processed, pending ratings confirmed.
 
@@ -146,5 +155,32 @@ public class RatingManagerTest {
 
         //Still not supposed to be processed.
         assertNotEquals(rating1, user1.getRating());
+    }
+
+    @Test
+    public void testMultiGameInterleaved() throws Exception {
+        GameUser userA1 = getNewAuthenticatedUser();
+        GameUser userA2 = getNewAuthenticatedUser();
+        GameUser userB1 = getNewAuthenticatedUser(); //this user will not submit
+        GameUser userB2 = getNewAuthenticatedUser();
+        GameUser userC1 = getNewAuthenticatedUser();
+        GameUser userC2 = getNewAuthenticatedUser();
+        int ratingA1 = rm.submitRating(userA1, userA2, RatingManager.GameResultType.WIN);
+        int ratingB2 = rm.submitRating(userB2, userB1, RatingManager.GameResultType.WIN);
+        int ratingC1 = rm.submitRating(userC1, userC2, RatingManager.GameResultType.LOSS);
+        int ratingA2 = rm.submitRating(userA2, userA1, RatingManager.GameResultType.LOSS);
+        int ratingC2 = rm.submitRating(userC2, userC1, RatingManager.GameResultType.WIN);
+
+        //Ratings should have changed accordingly.
+        //Easily comparable, as all users start as 1000.
+        assertTrue(ratingA1 > ratingA2);
+        assertTrue(ratingC1 < ratingC2);
+
+        //Supposed to be processed, pending ratings confirmed.
+        assertEquals(ratingA1, userA1.getRating());
+        assertEquals(ratingA2, userA2.getRating());
+        assertNotEquals(ratingB2, userB2.getRating());
+        assertEquals(ratingC1, userC1.getRating());
+        assertEquals(ratingC2, userC2.getRating());
     }
 }

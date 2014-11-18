@@ -35,8 +35,6 @@ public class RatingManager {
                 break;
         }
 
-        result.calculateNewRatings();
-
         int indexOfPendingResult = pendingResults.indexOf(result);
         if (indexOfPendingResult >= 0) {
             GameResult pendingResult = pendingResults.get(indexOfPendingResult);
@@ -48,6 +46,7 @@ public class RatingManager {
                 result.process(userAccountManager);
             }
         } else {
+            result.calculateNewRatings();
             pendingResults.add(result);
         }
 
