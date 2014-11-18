@@ -38,7 +38,7 @@ public class RatingManagerTest {
         GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
 
-        //Check preliminary rating returned is better than previous rating
+        //Check pending rating returned is better than previous rating
         assertTrue(user1.getRating() < rating1);
         assertEquals(user1.getPendingRating(), rating1);
     }
@@ -49,33 +49,47 @@ public class RatingManagerTest {
         GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.LOSS);
 
-        //Check preliminary rating returned is worse than previous rating
+        //Check pending rating returned is worse than previous rating
         assertTrue(user1.getRating() > rating1);
         assertEquals(user1.getPendingRating(), rating1);
     }
 
     @Test
-    public void testSubmitRatingReturnResultDraw1() throws Exception {
+    public void testSubmitRatingReturnResultDrawIncrease() throws Exception {
         GameUser user1 = uam.getUserByName(testUserName1); //first to report
         GameUser user2 = uam.getUserByName(testUserName2); //last to report
         user1.setRating(user2.getRating() * 2); //user1 > user2
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
 
-        //Check preliminary rating returned is worse than previous rating
+        //Check pending rating returned is worse than previous rating
         assertTrue(user1.getRating() > rating1);
         assertEquals(user1.getPendingRating(), rating1);
     }
 
     @Test
-    public void testSubmitRatingReturnResultDraw2() throws Exception {
+    public void testSubmitRatingReturnResultDrawDecrease() throws Exception {
         GameUser user1 = uam.getUserByName(testUserName1); //first to report
         GameUser user2 = uam.getUserByName(testUserName2); //last to report
         user1.setRating(user2.getRating() / 2); //user1 > user2
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
 
-        //Check preliminary rating returned is better than previous rating
+        //Check pending rating returned is better than previous rating
         assertTrue(user1.getRating() < rating1);
         assertEquals(user1.getPendingRating(), rating1);
+    }
+
+    @Test
+    public void testSubmitRatingReturnResultDrawEqual() throws Exception {
+        GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
+        GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
+
+        assertEquals(user1.getRating(), user2.getRating());
+        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
+        int rating2 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
+
+        //Check pending ratings have not changed following the DRAW
+        assertEquals(user1.getPendingRating(), user2.getPendingRating());
+        assertEquals(user1.getRating(), user1.getPendingRating());
     }
 
     @Test
