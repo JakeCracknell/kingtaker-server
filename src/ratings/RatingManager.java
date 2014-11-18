@@ -9,11 +9,12 @@ import java.util.LinkedList;
  * Created by jc4512 on 17/11/14.
  */
 public class RatingManager {
-    public boolean WRITE_LOCK = false;
-
     private UserAccountManager userAccountManager;
 
+    //Used as a queue - oldest unconfirmed games are at the head and are
+    //periodically removed, new unconfirmed games are added to the tail.
     private LinkedList<GameResult> pendingResults = new LinkedList<GameResult>();
+    private final int PENDING_RESULT_TIMEOUT_MS = 20000;
 
     public RatingManager(UserAccountManager userAccountManager) {
         this.userAccountManager = userAccountManager;
@@ -47,7 +48,7 @@ public class RatingManager {
             }
         } else {
             result.calculateNewRatings();
-            pendingResults.add(result);
+            pendingResults.addLast(result);
         }
 
         return reporter.getPendingRating();

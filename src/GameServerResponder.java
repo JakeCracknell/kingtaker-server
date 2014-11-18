@@ -1,3 +1,4 @@
+import NetworkingCodes.ClientCommandCode;
 import NetworkingCodes.ResponseCode;
 import ratings.RatingManager;
 import users.GameUser;
@@ -12,26 +13,33 @@ public class GameServerResponder {
     private UserAccountManager userAccountManager;
     private RatingManager ratingManager;
 
-    public GameServerResponder(GameLobby gameList, UserAccountManager userAccountManager) {
+    public GameServerResponder(GameLobby gameList,
+                               UserAccountManager userAccountManager,
+                               RatingManager ratingManager) {
         this.gameList = gameList;
         this.userAccountManager = userAccountManager;
+        this.ratingManager = ratingManager;
     }
 
-    public String reportGameResult(Socket socket, String winOrLoss, String opponentUsername) {
+    public String reportGameResult(Socket socket, int outcomeCode, String opponentUsername) {
         GameUser userReporter = userAccountManager.getUserByAddress(socket.getInetAddress());
         GameUser userOpponent = userAccountManager.getUserByName(opponentUsername);
 
-        if (winOrLoss.equals("0")) {
-            ratingManager.submitRating(userReporter, userOpponent,
-                    RatingManager.GameResultType.WIN);
-        } else if (winOrLoss.equals("1")) {
-            ratingManager.submitRating(userReporter, userOpponent,
-                    RatingManager.GameResultType.DRAW);
-        } else if (winOrLoss.equals("2")) {
-            ratingManager.submitRating(userReporter, userOpponent,
-                    RatingManager.GameResultType.LOSS);
-        } else {
-            return ResponseCode.INVALID + "";
+        switch (outcomeCode) {
+            case ClientCommandCode.PARAM_GAME_WIN :
+                ratingManager.submitRating(userReporter, userOpponent,
+                        RatingManager.GameResultType.WIN);
+                break;
+            case ClientCommandCode.PARAM_GAME_DRAW :
+                ratingManager.submitRating(userReporter, userOpponent,
+                        RatingManager.GameResultType.DRAW);
+                break;
+            case ClientCommandCode.PARAM_GAME_LOSS :
+                ratingManager.submitRating(userReporter, userOpponent,
+                        RatingManager.GameResultType.LOSS);
+                break;
+            default:
+                return ResponseCode.INVALID + "";
         }
 
         return ResponseCode.OK + ResponseCode.DEL + userReporter.getPendingRating();

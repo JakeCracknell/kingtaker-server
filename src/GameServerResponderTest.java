@@ -1,6 +1,8 @@
+import NetworkingCodes.ClientCommandCode;
 import NetworkingCodes.ResponseCode;
 import org.junit.Before;
 import org.junit.Test;
+import ratings.RatingManager;
 import users.GameUser;
 import users.UserAccountManager;
 
@@ -26,19 +28,14 @@ public class GameServerResponderTest {
     
     @Before
     public void setUp() throws Exception {
-        gsr = new GameServerResponder(new GameLobby(), new UserAccountManager());
+        UserAccountManager uam = new UserAccountManager();
+        gsr = new GameServerResponder(new GameLobby(), uam, new RatingManager(uam));
         testSocketBBC = new Socket(InetAddress.getByName("bbc.co.uk"), 80);
         testSocketGoogle = new Socket(InetAddress.getByName("google.co.uk"), 80);
     }
 
     @Test
-    public void testReportGameResult() throws Exception {
-        //TODO
-    }
-
-    @Test
     public void testRegisterAccountPositive() throws Exception {
-        String uniqueTestUsername = getTestUsername();
         String response = gsr.registerAccount(testSocketBBC, getTestUsername(), testPW);
         assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response);
     }
@@ -74,8 +71,27 @@ public class GameServerResponderTest {
     }
 
     @Test
-    public void testReportPlayer() throws Exception {
-        //TODO
+    public void testReportGameResult() throws Exception {
+        String uniqueTestUsername1 = getTestUsername();
+        String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername1, testPW);
+        assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
+
+        Thread.sleep(2); //ensure the second username is unique.
+
+        String uniqueTestUsername2 = getTestUsername();
+        String response2 = gsr.registerAccount(testSocketGoogle, uniqueTestUsername2, testPW);
+        assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response2);
+
+        String response3 = gsr.reportGameResult(testSocketBBC, ClientCommandCode.PARAM_GAME_WIN, uniqueTestUsername2);
+        String response4 = gsr.reportGameResult(testSocketGoogle, ClientCommandCode.PARAM_GAME_LOSS, uniqueTestUsername1);
+
+        assertTrue(response3.startsWith(ResponseCode.OK + ResponseCode.DEL));
+        assertTrue(response4.startsWith(ResponseCode.OK + ResponseCode.DEL));
+
+        int rating1 = Integer.valueOf(response3.replace(ResponseCode.OK + ResponseCode.DEL, ""));
+        int rating2 = Integer.valueOf(response4.replace(ResponseCode.OK + ResponseCode.DEL, ""));
+
+        assertTrue(rating1 > rating2);
     }
 
 
@@ -115,6 +131,16 @@ public class GameServerResponderTest {
 
         String response3 = gsr.getGameList();
         assertTrue(response3.matches(getGameListPositiveResponseRegex));
+    }
+
+    @Test
+    public void testReportGameResultPositive() throws Exception {
+        String uniqueTestUsername = getTestUsername();
+        String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
+        assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
+
+        String response2 = gsr.createGame(testSocketBBC, testVID);
+        assertEquals(ResponseCode.OK + "", response2);
     }
 
     @Test

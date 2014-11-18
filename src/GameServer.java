@@ -1,5 +1,6 @@
 import NetworkingCodes.ClientCommandCode;
 import NetworkingCodes.ResponseCode;
+import ratings.RatingManager;
 import users.UserAccountManager;
 
 import java.io.BufferedReader;
@@ -20,6 +21,7 @@ public class GameServer implements Runnable {
     private ServerSocket sktListener;
     private GameLobby gameList;
     private UserAccountManager userAccountManager;
+    private RatingManager ratingManager;
 
     @Override
     public void run() {
@@ -32,9 +34,13 @@ public class GameServer implements Runnable {
         System.out.println("Initialising user account manager...");
         userAccountManager = new UserAccountManager();
 
+        //Initialise new rating manager, with an empty list of pending games.
+        System.out.println("Initialising user rating manager...");
+        ratingManager = new RatingManager(userAccountManager);
+
         //Initialise responder.
         System.out.println("Initialising game server responder...");
-        gameServerResponder = new GameServerResponder(gameList, userAccountManager);
+        gameServerResponder = new GameServerResponder(gameList, userAccountManager, ratingManager);
 
         //Initialise listener - keep attempting until successful.
         System.out.println("Initialising listening socket...");
@@ -111,7 +117,7 @@ public class GameServer implements Runnable {
                     break;
 
                 case ClientCommandCode.REPORT_GAME_RESULT :
-                    response = gameServerResponder.reportGameResult(socket, fields[1], fields[2]);
+                    response = gameServerResponder.reportGameResult(socket, Integer.valueOf(fields[1]), fields[2]);
                     break;
             }
 

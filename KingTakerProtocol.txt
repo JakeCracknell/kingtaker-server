@@ -17,8 +17,9 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
     0 (ok)
     2 (unacceptable name)
     4 (account exists)
-6,1,opponentName - report win
-6,0,opponentName - report loss
+6,0,opponentName - report win
+6,1,opponentName - report draw
+6,2,opponentName - report loss
     0,rating
 
 
