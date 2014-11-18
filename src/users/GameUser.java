@@ -56,6 +56,16 @@ public class GameUser {
         return pendingRating;
     }
 
+    public void setPendingRating(int pendingRating) {
+        this.pendingRating = pendingRating;
+    }
+    public void setRating(int pendingRating) {
+        this.rating = pendingRating;
+    }
+    public void setRating() {
+        this.rating = this.pendingRating;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
