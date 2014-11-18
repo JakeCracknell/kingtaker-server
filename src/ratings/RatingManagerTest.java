@@ -120,7 +120,7 @@ public class RatingManagerTest {
         user2.setRating(user1.getRating() / 2);
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
         int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.DRAW);
-        assertTrue(rating1 < rating2);
+        assertTrue(rating1 > rating2);
 
         //Supposed to be processed, pending ratings confirmed.
 
