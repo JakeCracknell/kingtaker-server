@@ -14,6 +14,8 @@ public abstract class GameResult {
     public abstract ArrayList<GameUser> getUsers();
     public abstract String toString();
 
+    protected GameUser firstReporter;
+
     public void process(UserAccountManager userAccountManager) {
         // For each user associated with this game result, turn their pending
         // rating into their actual rating and make this change on the DB also.
@@ -22,6 +24,9 @@ public abstract class GameResult {
             userAccountManager.updateUser(gameUser);
         }
     }
+
+    // Equals, Hashcode and toString methods only compare usernames of the
+    // game's participants. The reporter is not included.
 
     @Override
     public boolean equals(Object o) {

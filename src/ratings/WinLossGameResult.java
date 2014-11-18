@@ -11,9 +11,10 @@ public class WinLossGameResult extends GameResult {
     private GameUser winner;
     private GameUser loser;
 
-    public WinLossGameResult(GameUser winner, GameUser loser) {
+    public WinLossGameResult(GameUser winner, GameUser loser, GameUser reporter) {
         this.winner = winner;
         this.loser = loser;
+        this.firstReporter = reporter;
     }
 
     @Override

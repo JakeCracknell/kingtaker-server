@@ -3,8 +3,7 @@ package ratings;
 import users.GameUser;
 import users.UserAccountManager;
 
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedList;
 
 /**
  * Created by jc4512 on 17/11/14.
@@ -14,7 +13,7 @@ public class RatingManager {
 
     private UserAccountManager userAccountManager;
 
-    private Queue<GameResult> pendingResults = new ConcurrentLinkedQueue<GameResult>();
+    private LinkedList<GameResult> pendingResults = new LinkedList<GameResult>();
 
     public RatingManager(UserAccountManager userAccountManager) {
         this.userAccountManager = userAccountManager;
@@ -26,21 +25,28 @@ public class RatingManager {
         GameResult result = null;
         switch (outcome) {
             case WIN:
-                result = new WinLossGameResult(reporter, opponent);
+                result = new WinLossGameResult(reporter, opponent, reporter);
                 break;
             case LOSS:
-                result = new WinLossGameResult(opponent, reporter);
+                result = new WinLossGameResult(opponent, reporter, reporter);
                 break;
             case DRAW:
-                result = new DrawGameResult(reporter, opponent);
+                result = new DrawGameResult(reporter, opponent, reporter);
                 break;
         }
 
         result.calculateNewRatings();
 
-        if (pendingResults.contains(result)) {
-            pendingResults.remove(result);
-            result.process(userAccountManager);
+        int indexOfPendingResult = pendingResults.indexOf(result);
+        if (indexOfPendingResult >= 0) {
+            GameResult pendingResult = pendingResults.get(indexOfPendingResult);
+            if (pendingResult.firstReporter.equals(reporter)) {
+                //User has sent request more than once, perhaps maliciously.
+                //TODO: report
+            } else {
+                pendingResults.remove(indexOfPendingResult);
+                result.process(userAccountManager);
+            }
         } else {
             pendingResults.add(result);
         }

@@ -141,13 +141,10 @@ public class RatingManagerTest {
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
 
         //Not supposed to be processed.
-
         assertNotEquals(rating1, user1.getRating());
-
         rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
 
         //Still not supposed to be processed.
-
         assertNotEquals(rating1, user1.getRating());
     }
 }

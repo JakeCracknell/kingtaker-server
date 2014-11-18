@@ -70,6 +70,8 @@ public class GameUser {
         this.rating = this.pendingRating;
     }
 
+
+    //Equals only compares on username - should be a unique primary key
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
