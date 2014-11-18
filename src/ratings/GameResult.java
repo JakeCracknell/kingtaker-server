@@ -8,6 +8,8 @@ import java.util.ArrayList;
  * Created by jc4512 on 17/11/14.
  */
 public abstract class GameResult {
+    protected final int DEVELOPMENT_COEFFICIENT = 32;
+
     public abstract void calculateNewRatings();
     public abstract ArrayList<GameUser> getUsers();
     public abstract String toString();

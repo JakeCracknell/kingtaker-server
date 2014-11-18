@@ -24,7 +24,20 @@ public class DrawGameResult extends GameResult {
 
     @Override
     public void calculateNewRatings() {
+        int user1Rating = user1.getRating();
+        int user2Rating = user2.getRating();
 
+        double user1Transformed = Math.pow(10, (user1Rating / 400));
+        double user2Transformed = Math.pow(10, (user2Rating / 400));
+
+        double user1Expected = user1Transformed / (user1Transformed + user2Transformed);
+        double user2Expected = user2Transformed / (user1Transformed + user2Transformed);
+
+        user1Rating += DEVELOPMENT_COEFFICIENT * (0.5 - user1Expected);
+        user2Rating += DEVELOPMENT_COEFFICIENT * (0.5 - user2Expected);
+
+        user1.setPendingRating(user1Rating);
+        user2.setPendingRating(user2Rating);
     }
 
     @Override

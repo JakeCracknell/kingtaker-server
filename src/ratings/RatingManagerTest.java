@@ -18,7 +18,7 @@ public class RatingManagerTest {
     @Before
     public void setUp() throws Exception {
         testUserName1 = getTestUsername();
-        testUserName2 = getTestUsername() + 1;
+        testUserName2 = getTestUsername() + "x";
         InetAddress testIP1 = InetAddress.getByAddress(new byte[]{8, 8, 8, 8});
         InetAddress testIP2 = InetAddress.getByAddress(new byte[]{8, 8, 4, 4});
         GameUser user1 = uam.registerUser(testUserName1, 0, testIP1);

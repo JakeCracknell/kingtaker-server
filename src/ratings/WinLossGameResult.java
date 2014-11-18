@@ -21,8 +21,14 @@ public class WinLossGameResult extends GameResult {
         int winnerRating = winner.getRating();
         int loserRating = loser.getRating();
 
-        winnerRating += 10;
-        loserRating -= 10;
+        double winnerTransformed = Math.pow(10, (winnerRating / 400));
+        double loserTransformed = Math.pow(10, (loserRating / 400));
+
+        double winnerExpected = winnerTransformed / (winnerTransformed + loserTransformed);
+        double loserExpected = loserTransformed / (winnerTransformed + loserTransformed);
+
+        winnerRating += DEVELOPMENT_COEFFICIENT * (1 - winnerExpected);
+        loserRating += DEVELOPMENT_COEFFICIENT * (0 - loserExpected);
 
         winner.setPendingRating(winnerRating);
         loser.setPendingRating(loserRating);
