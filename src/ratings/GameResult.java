@@ -1,17 +1,21 @@
 package ratings;
+import users.GameUser;
 import users.UserAccountManager;
+
+import java.util.ArrayList;
 
 /**
  * Created by jc4512 on 17/11/14.
  */
 public abstract class GameResult {
     public abstract void calculateNewRatings();
+    public abstract ArrayList<GameUser> getUsers();
     public abstract String toString();
 
     public void process(UserAccountManager userAccountManager) {
-        int winnerRating;
-        int loserRating;
-        //userAccountManager.updateUserRatings(winner, winnerRating, loser, loserRating);
+        for (GameUser gameUser : getUsers()) {
+            userAccountManager.updateUser(gameUser);
+        }
     }
 
     @Override
@@ -28,4 +32,5 @@ public abstract class GameResult {
     public int hashCode() {
         return this.toString().hashCode();
     }
+
 }

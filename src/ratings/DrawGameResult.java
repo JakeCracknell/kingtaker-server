@@ -2,6 +2,8 @@ package ratings;
 
 import users.GameUser;
 
+import java.util.ArrayList;
+
 /**
  * Created by jc4512 on 17/11/14.
  */
@@ -23,6 +25,14 @@ public class DrawGameResult extends GameResult {
     @Override
     public void calculateNewRatings() {
 
+    }
+
+    @Override
+    public ArrayList<GameUser> getUsers() {
+        ArrayList<GameUser> list = new ArrayList<GameUser>();
+        list.add(user1);
+        list.add(user2);
+        return list;
     }
 
     @Override

@@ -33,18 +33,6 @@ public class RatingManagerTest {
     }
 
     @Test
-    public void testSubmitRatingWinLossPositive() throws Exception {
-        GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
-        GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
-        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
-
-        //Check preliminary rating returned is better than previous rating
-        assertTrue(user1.getRating() < rating1);
-
-        int rating2 = rm.submitRating(user1, user2, RatingManager.GameResultType.LOSS);
-    }
-
-    @Test
     public void testSubmitRatingReturnResultWin() throws Exception {
         GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
         GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
@@ -89,4 +77,21 @@ public class RatingManagerTest {
         assertTrue(user1.getRating() < rating1);
         assertEquals(user1.getPendingRating(), rating1);
     }
+
+    @Test
+    public void testSubmitRatingWinLossPositive() throws Exception {
+        GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
+        GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
+        int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
+        int rating2 = rm.submitRating(user1, user2, RatingManager.GameResultType.LOSS);
+
+        //Supposed to be processed, pending ratings confirmed.
+
+        assertEquals(rating1, user1.getRating());
+        assertEquals(rating2, user2.getRating());
+    }
+
+
+
+
 }

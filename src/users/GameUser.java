@@ -41,6 +41,10 @@ public class GameUser {
         return rating;
     }
 
+    public int getHashedPassword() {
+        return hashedPassword;
+    }
+
     public Date getDateJoined() {
         return dateJoined;
     }

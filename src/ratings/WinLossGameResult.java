@@ -2,6 +2,8 @@ package ratings;
 
 import users.GameUser;
 
+import java.util.ArrayList;
+
 /**
  * Created by jc4512 on 17/11/14.
  */
@@ -24,6 +26,14 @@ public class WinLossGameResult extends GameResult {
 
         winner.setPendingRating(winnerRating);
         loser.setPendingRating(loserRating);
+    }
+
+    @Override
+    public ArrayList<GameUser> getUsers() {
+        ArrayList<GameUser> list = new ArrayList<GameUser>();
+        list.add(winner);
+        list.add(loser);
+        return list;
     }
 
     @Override

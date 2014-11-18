@@ -36,6 +36,11 @@ public class GameUserTest {
     }
 
     @Test
+    public void testGetHashedPassword() throws Exception {
+        assertEquals(getPasswordHash(testName,testPassword), testUser.getHashedPassword());
+    }
+
+    @Test
     public void testGetPendingRating() throws Exception {
         testUser.setPendingRating(testPendingRating);
         assertEquals(testRating, testUser.getRating());

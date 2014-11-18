@@ -149,6 +149,29 @@ public class UserAccountManager {
         return gameUser;
     }
 
+    // Used to update a GameUsers details in the database.
+    // Specifically, the rating and password.
+    public void updateUser(GameUser gameUser) {
+        try {
+            //Reconnect to database if the connection has been lost.
+            if (db.isClosed()) {
+                connectToDatabase();
+            }
+
+            //Prepared statement is used to minimise the risk of SQL injection
+            PreparedStatement stmt = db.prepareStatement
+                    ("UPDATE tblUsers SET PasswordHash = ?, Rating = ? WHERE Username = ?;");
+            stmt.setInt(1, gameUser.getHashedPassword());
+            stmt.setInt(2, gameUser.getRating());
+            stmt.setString(3, gameUser.getName());
+            int success = stmt.executeUpdate();
+
+            stmt.close();
+
+        } catch (SQLException e) {
+        }
+    }
+
 
     //Given an IP address of the client, gets that current user.
     //Returns null if they were never logged in.
@@ -181,5 +204,4 @@ public class UserAccountManager {
     public boolean checkUsernameIsAcceptable(String username) {
         return username != null && username.matches(USERNAME_REGEX);
     }
-
 }

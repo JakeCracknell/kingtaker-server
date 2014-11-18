@@ -175,4 +175,15 @@ public class UserAccountManagerTest {
         GameUser gameUser2 = uam.getUserByName(testUserNameNotInDB);
         assertNull(gameUser2);
     }
+
+    @Test
+    public void testUpdateUser() throws Exception {
+        String uniqueTestUsername = "test" + System.currentTimeMillis();
+        GameUser gameUser = uam.registerUser(uniqueTestUsername, testPasswordHash, testIP1);
+        gameUser.setRating(Integer.MAX_VALUE);
+        uam.updateUser(gameUser);
+
+        GameUser gameUser2 = uam.authenticateUser(uniqueTestUsername, testPasswordHash, testIP1);
+        assertEquals(Integer.MAX_VALUE, gameUser2.getRating());
+    }
 }
