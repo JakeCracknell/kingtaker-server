@@ -172,8 +172,10 @@ public class UserAccountManager {
 
     //Removes user/ip from hashmaps. They will need to authenticate themselves again.
     public void unauthenticateUser(GameUser user) {
-        ipToUserMap.remove(userToIpMap.remove(user));
-        usernameToUserMap.remove(user.getName());
+        if (user != null) {
+            ipToUserMap.remove(userToIpMap.remove(user));
+            usernameToUserMap.remove(user.getName());
+        }
     }
 
     public boolean checkUsernameIsAcceptable(String username) {
