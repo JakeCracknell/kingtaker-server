@@ -1,4 +1,5 @@
 import NetworkingCodes.ResponseCode;
+import ratings.RatingManager;
 import users.GameUser;
 import users.UserAccountManager;
 
@@ -9,6 +10,7 @@ import java.net.Socket;
 public class GameServerResponder {
     private GameLobby gameList;
     private UserAccountManager userAccountManager;
+    private RatingManager ratingManager;
 
     public GameServerResponder(GameLobby gameList, UserAccountManager userAccountManager) {
         this.gameList = gameList;
@@ -16,29 +18,23 @@ public class GameServerResponder {
     }
 
     public String reportGameResult(Socket socket, String winOrLoss, String opponentUsername) {
-        //TODO: ratings
-        //Return what their new rating would be provided the other party agrees on the result.
-        //Make a class that stores pending gameresults
-        // If the other party disagrees, the gameresult does not go
-        //through.
-
         GameUser userReporter = userAccountManager.getUserByAddress(socket.getInetAddress());
         GameUser userOpponent = userAccountManager.getUserByName(opponentUsername);
 
-        //GameUser opponent = userAccountManager.getUserByName(opponentUsername);
         if (winOrLoss.equals("0")) {
-            //win
+            ratingManager.submitRating(userReporter, userOpponent,
+                    RatingManager.GameResultType.WIN);
         } else if (winOrLoss.equals("1")) {
-            //draw
+            ratingManager.submitRating(userReporter, userOpponent,
+                    RatingManager.GameResultType.DRAW);
         } else if (winOrLoss.equals("2")) {
-            //loss
+            ratingManager.submitRating(userReporter, userOpponent,
+                    RatingManager.GameResultType.LOSS);
         } else {
             return ResponseCode.INVALID + "";
         }
 
-
-
-        return ResponseCode.OK + ResponseCode.DEL + userReporter.getRating();
+        return ResponseCode.OK + ResponseCode.DEL + userReporter.getPendingRating();
     }
 
     public String registerAccount(Socket socket, String username, String passwordHash) {
