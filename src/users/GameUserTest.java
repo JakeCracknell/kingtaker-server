@@ -15,6 +15,7 @@ public class GameUserTest {
     private final String testName = "bob";
     private final String testPassword = "password1";
     private final int testRating = 1900;
+    private final int testPendingRating = 500;
     private final Date testJoiningDate = new Date();
     private GameUser testUser;
 
@@ -31,6 +32,17 @@ public class GameUserTest {
 
     @Test
     public void testGetRating() throws Exception {
+        assertEquals(testRating, testUser.getRating());
+    }
+
+    @Test
+    public void testGetPendingRating() throws Exception {
+        testUser.setPendingRating(testPendingRating);
+        assertEquals(testRating, testUser.getRating());
+        assertEquals(testPendingRating, testUser.getPendingRating());
+        testUser.setRating();
+        assertEquals(testPendingRating, testUser.getRating());
+        testUser.setRating(testRating);
         assertEquals(testRating, testUser.getRating());
     }
 
@@ -57,6 +69,8 @@ public class GameUserTest {
                         getPasswordHash(testName,testPassword), testJoiningDate));
 
     }
+
+
 
     private int getPasswordHash(String username, String plaintextPassword) {
         return (username + plaintextPassword).hashCode();
