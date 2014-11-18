@@ -158,6 +158,42 @@ public class RatingManagerTest {
     }
 
     @Test
+    public void testSubmitRatingLossesUntilZero() throws Exception {
+        GameUser user1 = uam.getUserByName(testUserName1);
+        GameUser user2 = uam.getUserByName(testUserName2);
+
+        //User1 can beat user2 repeatedly until user2 has a rating of 0.
+        while (user2.getRating() > 0) {
+            int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
+            int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.LOSS);
+        }
+
+    }
+
+    //A user shouldn't be able to create dummy accounts, repeatedly win games, and
+    //get a score greater than double that of the average. In fact, due to rounding,
+    //there should come a point where the ratings stop changing (here, 1600).
+    @Test
+    public void testSubmitRatingManyWins() throws Exception {
+        GameUser sadGamer = uam.getUserByName(testUserName1);
+
+        boolean givenUp = false;
+        int lastRating = sadGamer.getRating();
+
+        while (!givenUp) {
+            GameUser dummyAccount = getNewAuthenticatedUser();
+
+            rm.submitRating(sadGamer, dummyAccount, RatingManager.GameResultType.WIN);
+            rm.submitRating(dummyAccount, sadGamer, RatingManager.GameResultType.LOSS);
+
+            givenUp = (lastRating == sadGamer.getRating());
+            lastRating = sadGamer.getRating();
+        }
+
+        assertTrue(sadGamer.getRating() < GameUser.DEFAULT_USER_RATING * 2);
+    }
+
+    @Test
     public void testMultiGameInterleaved() throws Exception {
         GameUser userA1 = getNewAuthenticatedUser();
         GameUser userA2 = getNewAuthenticatedUser();
@@ -183,4 +219,6 @@ public class RatingManagerTest {
         assertEquals(ratingC1, userC1.getRating());
         assertEquals(ratingC2, userC2.getRating());
     }
+
+
 }
