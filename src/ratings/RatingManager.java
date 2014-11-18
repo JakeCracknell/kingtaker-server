@@ -10,6 +10,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  * Created by jc4512 on 17/11/14.
  */
 public class RatingManager {
+    public boolean WRITE_LOCK = false;
+
     private UserAccountManager userAccountManager;
 
     private Queue<GameResult> pendingResults = new ConcurrentLinkedQueue<GameResult>();

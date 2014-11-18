@@ -85,7 +85,7 @@ public class RatingManagerTest {
 
         assertEquals(user1.getRating(), user2.getRating());
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
-        int rating2 = rm.submitRating(user1, user2, RatingManager.GameResultType.DRAW);
+        int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.DRAW);
 
         //Check pending ratings have not changed following the DRAW
         assertEquals(user1.getPendingRating(), user2.getPendingRating());
@@ -97,7 +97,7 @@ public class RatingManagerTest {
         GameUser user1 = uam.getUserByName(testUserName1); //winner and first to report
         GameUser user2 = uam.getUserByName(testUserName2); //loser and last to report
         int rating1 = rm.submitRating(user1, user2, RatingManager.GameResultType.WIN);
-        int rating2 = rm.submitRating(user1, user2, RatingManager.GameResultType.LOSS);
+        int rating2 = rm.submitRating(user2, user1, RatingManager.GameResultType.LOSS);
 
         //Supposed to be processed, pending ratings confirmed.
 

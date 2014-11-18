@@ -15,7 +15,10 @@ public abstract class GameResult {
     public abstract String toString();
 
     public void process(UserAccountManager userAccountManager) {
+        // For each user associated with this game result, turn their pending
+        // rating into their actual rating and make this change on the DB also.
         for (GameUser gameUser : getUsers()) {
+            gameUser.setRating();
             userAccountManager.updateUser(gameUser);
         }
     }
