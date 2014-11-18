@@ -36,13 +36,16 @@ public class RatingManager {
                 break;
         }
 
+        result.calculateNewRatings();
+
         if (pendingResults.contains(result)) {
             pendingResults.remove(result);
             result.process(userAccountManager);
         } else {
             pendingResults.add(result);
         }
-        return 0;
+
+        return reporter.getPendingRating();
     }
 
     //The outcome of the game from the point of view of the reporter.

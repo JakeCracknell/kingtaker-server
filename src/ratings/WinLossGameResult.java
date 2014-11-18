@@ -14,10 +14,16 @@ public class WinLossGameResult extends GameResult {
         this.loser = loser;
     }
 
-
     @Override
     public void calculateNewRatings() {
+        int winnerRating = winner.getRating();
+        int loserRating = loser.getRating();
 
+        winnerRating += 10;
+        loserRating -= 10;
+
+        winner.setPendingRating(winnerRating);
+        loser.setPendingRating(loserRating);
     }
 
     @Override
