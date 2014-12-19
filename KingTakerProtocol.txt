@@ -28,7 +28,10 @@ CLIENT TO CLIENT MESSAGES AND RESPONSES
     0,0,board (ok - I am white, here is the board)
     0,1,board (ok - I am black, here is the board)
     2 (refused)
-1,moveNo,old.x,old.y,new.x,new.y,[promotion] - send move
+1,moveNo,old.x,old.y,new.x,new.y,extra_field_unused - send move
+    0 (ok)
+    2 (refused)
+2,x,y,pieceType - insert standard chess piece type (for promotion)
     0 (ok)
     2 (refused)
 
