@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class UserAccountManager {
     private static final String DB_USER = "jc4512";
-    private static final String DB_PATH = "jdbc:postgresql://db:5432/jc4512";
+    private static final String DB_PATH = "jdbc:postgresql://db.doc.ic.ac.uk:5432/jc4512?ssl=true";
     private static final String DB_PASSWORD = "P5iKp1JYXf";
 
     private final String USERNAME_REGEX = "(\\w){3,20}";
