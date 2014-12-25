@@ -186,4 +186,15 @@ public class UserAccountManagerTest {
         GameUser gameUser2 = uam.authenticateUser(uniqueTestUsername, testPasswordHash, testIP1);
         assertEquals(Integer.MAX_VALUE, gameUser2.getRating());
     }
+
+    @Test
+    public void testReportUser() throws Exception {
+        String uniqueTestUsername1 = "testa" + System.currentTimeMillis();
+        String uniqueTestUsername2 = "testb" + System.currentTimeMillis();
+
+        GameUser gameUser1 = uam.registerUser(uniqueTestUsername1, testPasswordHash, testIP1);
+        GameUser gameUser2 = uam.registerUser(uniqueTestUsername2, testPasswordHash, testIP1);
+
+        uam.reportUser(gameUser1, gameUser2);
+    }
 }

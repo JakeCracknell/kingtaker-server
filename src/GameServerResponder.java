@@ -61,8 +61,13 @@ public class GameServerResponder {
         return response;
     }
 
-    public void reportPlayer(String offenderName) {
-        //TODO reporting players
+    public void reportPlayer(Socket socket, String offenderName) {
+        GameUser reporter = userAccountManager.getUserByAddress(socket.getInetAddress());
+        GameUser hacker = userAccountManager.getUserByName(offenderName);
+
+        if (reporter != null && hacker != null) {
+            userAccountManager.reportUser(reporter, hacker);
+        }
     }
 
     public void removeGame(Socket socket) {

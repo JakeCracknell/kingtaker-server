@@ -172,6 +172,25 @@ public class UserAccountManager {
         }
     }
 
+    public void reportUser(GameUser plaintiff, GameUser defendant) {
+        try {
+            //Reconnect to database if the connection has been lost.
+            if (db.isClosed()) {
+                connectToDatabase();
+            }
+
+            //Prepared statement is used to minimise the risk of SQL injection
+            PreparedStatement stmt = db.prepareStatement
+                    ("INSERT INTO tblReports VALUES (?, ?, now())");
+            stmt.setString(1, defendant.getName());
+            stmt.setString(2, plaintiff.getName());
+            int success = stmt.executeUpdate();
+
+            stmt.close();
+
+        } catch (SQLException e) {
+        }
+    }
 
     //Given an IP address of the client, gets that current user.
     //Returns null if they were never logged in.

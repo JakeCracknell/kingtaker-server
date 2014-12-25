@@ -110,7 +110,7 @@ public class GameServer implements Runnable {
                     break;
 
                 case ClientCommandCode.REPORT_PLAYER :
-                    gameServerResponder.reportPlayer(fields[1]);
+                    gameServerResponder.reportPlayer(socket, fields[1]);
                     break;
 
                 case ClientCommandCode.REGISTER_ACCOUNT :

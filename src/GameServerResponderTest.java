@@ -94,7 +94,6 @@ public class GameServerResponderTest {
         assertTrue(rating1 > rating2);
     }
 
-
     @Test
     public void testCreateGamePositive() throws Exception {
         String uniqueTestUsername = getTestUsername();
@@ -131,16 +130,6 @@ public class GameServerResponderTest {
 
         String response3 = gsr.getGameList();
         assertTrue(response3.matches(getGameListPositiveResponseRegex));
-    }
-
-    @Test
-    public void testReportGameResultPositive() throws Exception {
-        String uniqueTestUsername = getTestUsername();
-        String response1 = gsr.registerAccount(testSocketBBC, uniqueTestUsername, testPW);
-        assertEquals(ResponseCode.OK + ResponseCode.DEL + GameUser.DEFAULT_USER_RATING, response1);
-
-        String response2 = gsr.createGame(testSocketBBC, testVID);
-        assertEquals(ResponseCode.OK + "", response2);
     }
 
     @Test

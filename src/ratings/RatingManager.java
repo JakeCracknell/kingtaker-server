@@ -44,9 +44,9 @@ public class RatingManager implements Runnable {
         if (indexOfPendingResult >= 0) {
             GameResult pendingResult = pendingResults.get(indexOfPendingResult);
             if (pendingResult.firstReporter.equals(reporter)) {
-                //User has sent request more than once, perhaps maliciously.
-                //TODO: report
+                //User has sent request more than once, perhaps maliciously. Ignore!
             } else {
+                //Second player has confirmed result - dequeue and commit the rating change.
                 pendingResults.remove(indexOfPendingResult);
                 result.process(userAccountManager);
             }
