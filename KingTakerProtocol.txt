@@ -5,7 +5,6 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
 1,username,passwordHash - authenticate user
     0,rating
     4 (wrong un/pw)
-    2 (banned)
 2,variantID - create game
     0 (ok)
     4 (auth timeout)
@@ -24,17 +23,15 @@ CLIENT TO SERVER MESSAGES AND RESPONSES
 
 
 CLIENT TO CLIENT MESSAGES AND RESPONSES
-0,username,rating - connect to open game
-    0,0,board (ok - I am white, here is the board)
-    0,1,board (ok - I am black, here is the board)
-    2 (refused)
-1,moveNo,old.x,old.y,new.x,new.y,extra_field_unused - send move
+9,username,rating - request to connect to/join an open game
+    7,0,board (ok - I am white, here is the board)
+    7,1,board (ok - I am black, here is the board)
+    6 (request to join refused by user)
+    2 (client no longer has an open game)
+8,old.x,old.y,new.x,new.y,_ - move my chess piece
+8,x,y,x,y,promotedPieceType - promote pawn at (x,y) to given type
     0 (ok)
-    2 (refused)
-2,x,y,pieceType - insert standard chess piece type (for promotion)
-    0 (ok)
-    2 (refused)
-
+    1 (refused)
 
 RESPONSE ERROR CODES:
 0 - OK
@@ -42,3 +39,7 @@ RESPONSE ERROR CODES:
 2 - connection refused / access refused
 3 - requested object is empty
 4 - login fail or authentication timeout
+
+
+boardCode example:
+#$T:1~V:1$|N:Queen~L:0~X:0~Y:0~T:Black~M:||N:Rook~L:0~X:0~Y:1~T:Black~M:||N:King~L:0~X:0~Y:2~T:Black~M:||N:Knight~L:0~X:0~Y:3~T:Black~M:||N:Knight~L:0~X:0~Y:4~T:Black~M:||N:Bishop~L:0~X:0~Y:5~T:Black~M:||N:Bishop~L:0~X:0~Y:6~T:Black~M:||N:Rook~L:0~X:0~Y:7~T:Black~M:||N:Pawn~L:0~X:1~Y:0~T:Black~M:F||N:Pawn~L:0~X:1~Y:1~T:Black~M:F||N:Pawn~L:0~X:1~Y:2~T:Black~M:F||N:Pawn~L:0~X:1~Y:3~T:Black~M:F||N:Pawn~L:0~X:1~Y:4~T:Black~M:F||N:Pawn~L:0~X:1~Y:5~T:Black~M:F||N:Pawn~L:0~X:1~Y:6~T:Black~M:F||N:Pawn~L:0~X:1~Y:7~T:Black~M:F||N:Pawn~L:0~X:6~Y:0~T:White~M:F||N:Pawn~L:0~X:6~Y:1~T:White~M:F||N:Pawn~L:0~X:6~Y:2~T:White~M:F||N:Pawn~L:0~X:6~Y:3~T:White~M:F||N:Pawn~L:0~X:6~Y:4~T:White~M:F||N:Pawn~L:0~X:6~Y:5~T:White~M:F||N:Pawn~L:0~X:6~Y:6~T:White~M:F||N:Pawn~L:0~X:6~Y:7~T:White~M:F||N:Rook~L:0~X:7~Y:0~T:White~M:||N:Bishop~L:0~X:7~Y:1~T:White~M:||N:Bishop~L:0~X:7~Y:2~T:White~M:||N:Knight~L:0~X:7~Y:3~T:White~M:||N:Knight~L:0~X:7~Y:4~T:White~M:||N:King~L:0~X:7~Y:5~T:White~M:||N:Rook~L:0~X:7~Y:6~T:White~M:||N:Queen~L:0~X:7~Y:7~T:White~M:|#
