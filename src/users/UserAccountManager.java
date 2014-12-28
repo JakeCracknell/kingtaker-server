@@ -223,4 +223,28 @@ public class UserAccountManager {
     public boolean checkUsernameIsAcceptable(String username) {
         return username != null && username.matches(USERNAME_REGEX);
     }
+
+    public void dumpReports() {
+        try {
+            //Reconnect to database if the connection has been lost.
+            if (db.isClosed()) {
+                connectToDatabase();
+            }
+
+            //Prepared statement is used to minimise the risk of SQL injection
+            PreparedStatement stmt = db.prepareStatement
+                    ("SELECT * FROM tblReports;");
+            ResultSet rs = stmt.executeQuery();
+
+            //If login details are correct and user/pw exists in database,
+            //create new GameUser instance.
+            while (rs.next()) {
+                System.out.println(rs.getString(1) + "\t" + rs.getString(2) + "\t" + rs.getDate(3));
+            }
+            rs.close();
+            stmt.close();
+
+        } catch (SQLException e) {
+        }
+    }
 }

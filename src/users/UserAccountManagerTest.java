@@ -197,4 +197,9 @@ public class UserAccountManagerTest {
 
         uam.reportUser(gameUser1, gameUser2);
     }
+
+    @Test
+    public void dumpReports() throws Exception {
+        uam.dumpReports();
+    }
 }

@@ -24,7 +24,7 @@ public class GameServerResponder {
     public String reportGameResult(Socket socket, int outcomeCode, String opponentUsername) {
         GameUser userReporter = userAccountManager.getUserByAddress(socket.getInetAddress());
         GameUser userOpponent = userAccountManager.getUserByName(opponentUsername);
-        
+
         if (userOpponent != null && userReporter != null) {
             switch (outcomeCode) {
                 case ClientCommandCode.PARAM_GAME_WIN :
