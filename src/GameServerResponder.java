@@ -24,25 +24,30 @@ public class GameServerResponder {
     public String reportGameResult(Socket socket, int outcomeCode, String opponentUsername) {
         GameUser userReporter = userAccountManager.getUserByAddress(socket.getInetAddress());
         GameUser userOpponent = userAccountManager.getUserByName(opponentUsername);
+        
+        if (userOpponent != null && userReporter != null) {
+            switch (outcomeCode) {
+                case ClientCommandCode.PARAM_GAME_WIN :
+                    ratingManager.submitRating(userReporter, userOpponent,
+                            RatingManager.GameResultType.WIN);
+                    break;
+                case ClientCommandCode.PARAM_GAME_DRAW :
+                    ratingManager.submitRating(userReporter, userOpponent,
+                            RatingManager.GameResultType.DRAW);
+                    break;
+                case ClientCommandCode.PARAM_GAME_LOSS :
+                    ratingManager.submitRating(userReporter, userOpponent,
+                            RatingManager.GameResultType.LOSS);
+                    break;
+                default:
+                    return ResponseCode.INVALID + "";
+            }
 
-        switch (outcomeCode) {
-            case ClientCommandCode.PARAM_GAME_WIN :
-                ratingManager.submitRating(userReporter, userOpponent,
-                        RatingManager.GameResultType.WIN);
-                break;
-            case ClientCommandCode.PARAM_GAME_DRAW :
-                ratingManager.submitRating(userReporter, userOpponent,
-                        RatingManager.GameResultType.DRAW);
-                break;
-            case ClientCommandCode.PARAM_GAME_LOSS :
-                ratingManager.submitRating(userReporter, userOpponent,
-                        RatingManager.GameResultType.LOSS);
-                break;
-            default:
-                return ResponseCode.INVALID + "";
+            return ResponseCode.OK + ResponseCode.DEL + userReporter.getPendingRating();
+        } else {
+            return ResponseCode.INVALID + "";
         }
 
-        return ResponseCode.OK + ResponseCode.DEL + userReporter.getPendingRating();
     }
 
     public String registerAccount(Socket socket, String username, String passwordHash) {
